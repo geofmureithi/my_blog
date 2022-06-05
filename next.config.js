@@ -64,6 +64,15 @@ module.exports = withContentlayer(
     eslint: {
       dirs: ['pages', 'components', 'lib', 'layouts', 'scripts'],
     },
+    async redirects() {
+      return [
+        {
+          source: '/posts/:slug',
+          destination: '/blog/:slug',
+          permanent: true,
+        },
+      ]
+    },
     async headers() {
       return [
         {

@@ -1,19 +1,21 @@
 const projectsData = [
   {
-    title: 'A Search Engine',
-    description: `What if you could look up any information in the world? Webpages, images, videos
-    and more. Google has many features to help you find exactly what you're looking
-    for.`,
-    imgSrc: '/static/images/google.png',
-    href: 'https://www.google.com',
+    title: 'Apalis',
+    description: `Apalis is a rust library for efficient and reliable background jobs processing using the actor model approach.`,
+    imgSrc: '/static/images/apalis.png',
+    href: 'https://github.com/geofmureithi/apalis',
   },
   {
-    title: 'The Time Machine',
-    description: `Imagine being able to travel back in time or to the future. Simple turn the knob
-    to the desired date and press "Go". No more worrying about lost keys or
-    forgotten headphones with this simple yet affordable solution.`,
-    imgSrc: '/static/images/time-machine.jpg',
-    href: '/blog/the-time-machine',
+    title: 'MPesa Rest API for Node.js',
+    description: `M-Pesa Library for Node.js using REST API`,
+    imgSrc: '/static/images/mpesa-node.jpeg',
+    href: 'https://github.com/safaricom/mpesa-node-library',
+  },
+  {
+    title: 'MPesa Rest API for .Net',
+    description: `M-Pesa Rest API Library for .Net/C#.`,
+    imgSrc: '/static/images/mpesa.netlogo.png',
+    href: 'https://github.com/geofmureithi/Mpesa.Net',
   },
 ]
 

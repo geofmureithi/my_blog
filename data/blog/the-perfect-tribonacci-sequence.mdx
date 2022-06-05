@@ -1,0 +1,103 @@
+---
+title: 'Python: Writing the perfect Tribonacci sequence'
+date: '2017-12-11'
+tags: ['python', 'memoize']
+summary: Tribonacci calculations without a maximum recussion error
+draft: false
+images: []
+---
+
+## Overview
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+
+## Not Fibonacci, Tribonacci
+
+A Fibonacci sequence function in python below:
+
+```python
+def fib(n):
+ a,b = 1,1
+ for i in range(n-1):
+    a,b = b,a+b
+ return a
+print(fib(5))
+```
+
+A Tribonacci sequences occur in several ways:
+
+| a   | b   | c   | Sequence                                          |
+| --- | --- | --- | ------------------------------------------------- |
+| 0   | 0   | 1   | 0, 1, 1, 1, 2, 4, 7, 13, 24, 44, 81, 149, …       |
+| 1   | 1   | 1   | 1, 1, 1, 3, 5, 9, 17, 31, 57, 105, 193, 355, …    |
+| 0   | 1   | 0   | 0, 1, 0, 1, 2, 3, 6, 11, 20, 37, 68, 125, 230, …  |
+| 3   | 1   | 3   | 3, 1, 3, 7, 11, 21, 39, 71, 131, 241, 443, 815, … |
+| -1  | 2   | 2   | -1, 2, 2, 3, 7, 12, 22, 41, 75, 138, 254, 467, …  |
+
+Now, Apart from creating a function that can handle any sequence, the function was also supposed to calculate huge numbers.
+I decided to start with a simple if loop.
+
+## Simplest Approach
+
+```python
+def fib3(n):
+# maximum recussion error for 4000
+ if n == 0:
+    return 1
+ elif n == 1:
+    return 1
+ elif n == 2:
+    return 1
+ else:
+    return fib3(n-1) + fib3(n-2) + fib3(n-3)
+```
+
+This worked for small Tribonacci calculations, but had a maximum recussion error.
+My second instinct was to memorize.
+
+## Memorize
+
+```python
+memory = {0:1, 1:1, 2:1}
+
+def fib3_alternative(n):
+# maximum recussion error for 4000; Avoided by building up results in memory
+ if not n in memory:
+    memory[n] = fib3_alternative(n-1) + fib3_alternative(n-2) + fib3_alternative(n-3)
+ return memory[n]
+```
+
+This would work but only if I build the memory slowly:
+
+Building the memory
+
+```python
+#to avoid maximum recussion errors in python, we have to smartly build our fib3 memory
+fib3_alternative(40)
+fib3_alternative(100)
+fib3_alternative(300)
+fib3_alternative(700)
+fib3_alternative(1000)
+fib3_alternative(1500)
+fib3_alternative(2000)
+fib3_alternative(2500)
+fib3_alternative(3000)
+fib3_alternative(3500)
+print("Fib3_alternative for 4000 is {}".format(fib3_alternative(4000)))
+I had to create something that would work for all sequences, and must have no complicated methods.
+```
+
+After several times of trial and error, It came to me:
+
+### Queueing
+
+```python
+def fib3_best(n):
+ queue = [1, 1, 1]
+ for i in xrange(n-2):
+    queue = queue[1:] + [sum(queue)]
+ return queue[-1]
+print ("Fib3_best for 4000 is {}".format(fib3_best(4000)))
+```
+
+This works like a charm! You can change queue to whichever sequence you feel suits you.

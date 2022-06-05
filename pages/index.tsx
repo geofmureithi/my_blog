@@ -7,6 +7,7 @@ import { sortedBlogPost, allCoreContent } from '@/lib/utils/contentlayer'
 import { InferGetStaticPropsType } from 'next'
 import NewsletterForm from '@/components/NewsletterForm'
 import { allBlogs } from 'contentlayer/generated'
+import Image from 'next/image'
 
 const MAX_DISPLAY = 5
 
@@ -19,13 +20,55 @@ export const getStaticProps = async () => {
 }
 
 export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const headingColorClass =
+    'bg-gradient-to-r from-green-600 to-red-600 dark:bg-gradient-to-l dark:from-gray-500 dark:to-lime-600'
   return (
     <>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
+      <div className="mt-8 divide-y divide-gray-200 dark:divide-gray-700 md:mt-16">
+        <div className="my-4 space-y-2 pt-6 pb-8 md:space-y-5 xl:grid xl:grid-cols-3">
+          <div className="pr-8 xl:col-span-2">
+            <p
+              className={`mb-4 bg-clip-text text-4xl font-extrabold leading-[60px] tracking-tight text-transparent ${headingColorClass} md:text-6xl md:leading-[86px]`}
+            >
+              Habari!
+            </p>
+
+            <div className="text-lg leading-8 text-gray-600 dark:text-gray-400">
+              <h1 className="text-neutral-900 dark:text-neutral-200">
+                I'm <span className="font-medium">Njuguna Mureithi, </span>a{' '}
+                <span className="font-medium">Senior Engineer</span> from Nairobi, Kenya.
+              </h1>
+              <p className="mt-4 mb-8">
+                I started my coding journey in 2007 and sold my first software in 2010
+                <br />
+                I write code every possible day and have done so gaining 10+ years of real work
+                experience.
+                <br />
+                I enjoy learning new concepts and languages.
+                <br />
+                I'm currently involved a lot with Rust and Javascript with a little bit of C.
+                <br />
+              </p>
+              <p className="my-8">Karibu!</p>
+            </div>
+          </div>
+          <div className="hidden xl:block">
+            <Image
+              className="rounded object-cover object-center"
+              alt="hero"
+              layout="responsive"
+              width={1280}
+              height={960}
+              src="/static/images/who-am-i.jpeg"
+            />
+          </div>
+        </div>
+      </div>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pt-6 pb-8 md:space-y-5">
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-            Latest
+          <h1 className="text-2xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-4xl md:leading-14">
+            Latest Posts
           </h1>
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
             {siteMetadata.description}

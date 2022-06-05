@@ -1,0 +1,155 @@
+---
+title: Creating a simple beautiful tab design with no JavaScript
+date: '2015-08-12'
+tags: ['css3', 'javascript', 'ui']
+summary: 'Lets create Css3 based tabs without Javascript. These tabs will include an icon and are responsive.'
+images: []
+draft: false
+---
+
+## Overview
+
+We want to create Css3 based Tabs. These tabs will include an Icon and is responsive.
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+
+## HTML
+
+First we need to lay the basis of a tab:
+
+### Create Option Buttons
+
+```html
+<div id="options">
+  <input class="tabular" id="tab1" type="radio" name="tabs" checked />
+  <label for="tab1">Paypal</label>
+  <input id="tab2" class="tabular" name="tabs" type="radio" />
+  <label for="tab2">American Express</label>
+  <input id="tab3" class="tabular" name="tabs" type="radio" />
+  <label for="tab3">Visa</label>
+  <input id="tab4" class="tabular" name="tabs" type="radio" />
+  <label for="tab4">MasterCard</label>
+</div>
+```
+
+### Tab Content
+
+Next, We lay the foundation of Tab Content:
+
+```html
+<section id="content1">
+  <p>
+    <!-- Content Goes Here-->
+  </p>
+</section>
+<section id="content2">
+  <p>
+    <!-- Content Goes Here-->
+  </p>
+</section>
+<section id="content3">
+  <p>
+    <!-- Content Goes Here-->
+  </p>
+</section>
+<section id="content4">
+  <p>
+    <!-- Content Goes Here-->
+  </p>
+</section>
+```
+
+## CSS
+
+### Requirements
+
+First we import Google fonts and Font Awesome
+
+```css
+@import url('http://fonts.googleapis.com/css?family=Open+Sans:400,600,700');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css');
+```
+
+### Components
+
+```css
+section {
+  display: none;
+  padding: 20px 0 0;
+  border-top: 1px solid #ddd;
+}
+input.tabular {
+  display: none;
+}
+Styling Lets style our labels label {
+  display: inline-block;
+  margin: 0 0 -1px;
+  padding: 15px 25px;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+  border: 1px solid transparent;
+}
+label:before {
+  font-family: fontawesome;
+  font-weight: normal;
+  margin-right: 10px;
+}
+label[for*='1']:before {
+  content: '\f1f4';
+}
+label[for*='2']:before {
+  content: '\f1f3';
+}
+label[for*='3']:before {
+  content: '\f1f0';
+}
+label[for*='4']:before {
+  content: '\f1f1';
+}
+Next lets style our hovered states Hover and checked states label:hover {
+  color: #888;
+  cursor: pointer;
+}
+input.tabular:checked + label {
+  color: #555;
+  border: 1px solid #ddd;
+  border-top: 2px solid orange;
+  border-bottom: 1px solid #fff;
+}
+#tab1:checked ~ #content1,
+#tab2:checked ~ #content2,
+#tab3:checked ~ #content3,
+#tab4:checked ~ #content4 {
+  display: block;
+}
+```
+
+### Media Queries
+
+Finally Lets play around with media queries:
+
+```css
+@media screen and (max-width: 650px) {
+  label {
+    font-size: 0;
+  }
+  label:before {
+    margin: 0;
+    font-size: 18px;
+  }
+}
+@media screen and (max-width: 400px) {
+  label {
+    padding: 15px;
+  }
+}
+```
+
+## Output
+
+Here is what it looks like:
+
+![Tabs with no JS](/static/images/ui/tabs-with-no-javascript.png)
+
+You can play around with the tabs here: https://jsfiddle.net/d8v2qLLa/

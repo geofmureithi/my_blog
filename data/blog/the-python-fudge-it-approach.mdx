@@ -1,0 +1,97 @@
+---
+title: 'Python: The F#%K It Approach'
+date: '2021-01-31'
+tags: ['python', 'errors']
+draft: false
+summary: But what do you do in those times where it proves difficult to approach things rationally in the now and then?
+images: []
+---
+
+## Overview
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+
+## Not handling exceptions?
+
+Once in a while as a programmer you meet difficult times, be it time-limits, shitty code and much more. It is not advisable to suppress errors. Every programmer should handle exceptions. But what do you do in those times where it proves difficult to approach things rationally in the now and then?
+
+## Handling problematic imports
+
+Import the module with `fuckit`
+
+```python
+import fuckit
+
+#import problematic_module
+fuckit('problematic_module')
+problematic_module.a_function()
+```
+
+## Class with Errors
+
+As a `@decorator`
+
+```python
+@fuckit
+class Person:
+
+    AnotherName = 'Sue Ann'
+
+    def __init__(self):
+        self.FirstName = 'Tom'
+        self.LastName = 'Sneed'
+
+    def get_name(self):
+        return self.FirstName + ' ' + self.LastName
+
+@fuckit
+class Employee(Person):
+
+    def __init__(self):
+        self.empnum = 'abc123'
+
+    def get_emp(self):
+        print self.AnotherName
+        return self.FirstName + ' ' + 'abc'
+
+
+# The lines below work just fine
+
+x = Person()
+y = Employee()
+
+print x.get_name()
+print y.get_emp()
+```
+
+## Function with errors
+
+As a `@decorator`
+
+```python
+@fuckit
+def printme( str ):
+    something_wrong # No Exception
+    printme("My string")
+```
+
+## Using it in a ‘with’ situation:
+
+```python
+def printme( str ):
+    with fuckit:
+        printme("It will never be an error")
+   #Similar to
+    try:
+        printme("It will never be an error")
+    except Exception:
+    pass
+```
+
+Keep in mind that the decorator form of fuckit can’t stop syntax errors
+
+Go on to Github and view the module https://github.com/ajalt/fuckitpy or run :
+
+```
+$ pip install fuckit
+```

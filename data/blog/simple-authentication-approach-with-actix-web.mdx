@@ -1,0 +1,178 @@
+---
+title: Simple authentication with actix-web
+date: '2021-04-04'
+tags: ['actix', 'rust', 'authentication']
+summary: 'Learn how to painlesly apply authentication to your actix-web project'
+images: ['/static/images/actix/actix-web-authentication.jpeg']
+draft: false
+---
+
+## Overview
+
+This article is based on [actix-acl-example](https://github.com/geofmureithi/actix-acl-example) available on Github and [How can I make protected routes in actix-web ](https://stackoverflow.com/questions/62269278/how-can-i-make-protected-routes-in-actix-web) on StackOverflow
+
+<TOCInline toc={props.toc} exclude="Overview" toHeading={2} />
+
+## Getting Started
+
+Our end goal is to achieve such an design:
+
+```rust
+#[get("/admin")]
+async fn admin(admin: Admin) -> impl Responder {
+    HttpResponse::Ok().body("You are an admin")
+}
+
+#[get("/account")]
+async fn account(user: User) -> impl Responder {
+    web::Json(user)
+}
+
+#[get("/team")]
+async fn team(user: User) -> impl Responder {
+    if user.authorities != Scope::Admin {
+        return HttpResponse::Ok().json(vec![user])
+    }
+    let user_list = db.get_team();
+    HttpResponse::Ok().json(user_list)
+}
+```
+
+This approach will allow you to apply authentication on multiple routes and also get the user details in return.
+
+## Defining posible types
+
+Lets define our user and possible user types:
+
+We are going to have three user types.
+
+```rust
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[serde(rename_all = "camelCase")]
+enum UserType {
+    Guest,
+    RegularUser,
+    Admin
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+#[serde(rename_all = "camelCase")]
+struct User {
+    id: String,
+    first_name: Option<String>,
+    last_name: Option<String>,
+    user_type: UserType,
+}
+
+/// An admin is still a user
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+struct Admin(User);
+```
+
+## Persisting Session Data
+
+Right now we will store our sessions on a Hashmap but remember you can extend this to use a database such as Postgres.
+
+```rust
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+struct Sessions {
+    map: HashMap<String, User>,
+}
+```
+
+## Logging In
+
+We are going to use `actix-identity` to store our user_id. This will allow us to be able to retieve the user_id from identity
+and use it to get the `User` object from session data.
+
+```rust
+#[post("/login")]
+async fn login(login: web::Json<Login>, sessions: web::Data<RwLock<Sessions>>, identity: Identity) -> impl Responder {
+    let id = login.id.to_string();
+    let scope = &login.scope;
+    //let user = fetch_user(login).await // from db?
+    identity.remember(id.clone());
+    let user = User {
+        id: id.clone(),
+        last_name: Some(String::from("Doe")),
+        first_name: Some(String::from("John")),
+        user_type: scope.clone(),
+    };
+    sessions
+        .write()
+        .unwrap()
+        .map
+        .insert(id, user.clone());
+    info!("login user: {:?}", user);
+    HttpResponse::Ok().json(user)
+}
+
+```
+
+## Extractors
+
+Up to now, our initial code could not run because both `User` and `Admin` dont implement `FromRequest`
+
+Lets now write our `User` extractor:
+
+```rust
+impl FromRequest for User {
+    type Config = ();
+    type Error = Error;
+    type Future = Pin<Box<dyn Future<Output = Result<User, Error>>>>;
+
+    fn from_request(req: &HttpRequest, pl: &mut Payload) -> Self::Future {
+        let fut = Identity::from_request(req, pl);
+        let sessions: Option<&web::Data<RwLock<Sessions>>> = req.app_data();
+        if sessions.is_none() {
+            warn!("sessions is empty(none)!");
+            return Box::pin(async { Err(ErrorUnauthorized("unauthorized")) });
+        }
+        let sessions = sessions.unwrap().clone();
+        Box::pin(async move {
+            if let Some(identity) = fut.await?.identity() {
+                if let Some(user) = sessions
+                    .read()
+                    .unwrap()
+                    .map
+                    .get(&identity)
+                    .map(|x| x.clone())
+                {
+                    return Ok(user);
+                }
+            };
+
+            Err(ErrorUnauthorized("unauthorized"))
+        })
+    }
+}
+```
+
+This checks whether the identity exists and the id is found in our Session data.
+
+We can do the same for `Admin`
+
+```rust
+impl FromRequest for Admin {
+    type Config = ();
+    type Error = Error;
+    type Future = Pin<Box<dyn Future<Output = Result<Admin, Error>>>>;
+
+    fn from_request(req: &HttpRequest, pl: &mut Payload) -> Self::Future {
+        let fut = User::from_request(req, pl);
+        Box::pin(async move {
+            if let Some(user) = fut.await? {
+                if user.user_type != Scope::Admin {
+                    return Err(ErrorUnauthorized("Not an Admin"));
+                }
+                return Ok(Admin(user));
+            }
+            Err(ErrorUnauthorized("unauthorized"))
+        })
+    }
+}
+```
+
+And thats a wrap. We have been able to use extractors to verify a user is authenticated and matched their type.
+
+[Code on Github](https://github.com/geofmureithi/actix-acl-example)
