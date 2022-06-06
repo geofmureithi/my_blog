@@ -21,6 +21,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       method: 'POST',
     })
 
+    console.log(await response.text())
+
     if (response.status >= 400) {
       return res.status(500).json({ error: `There was an error subscribing to the list.` })
     }

@@ -4,12 +4,14 @@ import Plausible from './Plausible'
 import SimpleAnalytics from './SimpleAnalytics'
 import Umami from './Umami'
 import siteMetadata from '@/data/siteMetadata'
+import CountlyScript from './CountlyAnalytics'
 
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void
     plausible?: (...args: any[]) => void
     sa_event?: (...args: any[]) => void
+    Countly: any
   }
 }
 
@@ -22,6 +24,7 @@ const Analytics = () => {
       {isProduction && siteMetadata.analytics.simpleAnalytics && <SimpleAnalytics />}
       {isProduction && siteMetadata.analytics.umamiWebsiteId && <Umami />}
       {isProduction && siteMetadata.analytics.googleAnalyticsId && <GA />}
+      {isProduction && siteMetadata.analytics.countlyAppKey && <CountlyScript />}
     </>
   )
 }

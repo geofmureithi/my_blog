@@ -1,11 +1,11 @@
 const siteMetadata = {
-  title: 'Code by Mureithi',
+  title: 'Code with Mureithi',
   author: 'Njuguna Mureithi',
-  headerTitle: 'Code by Mureithi',
+  headerTitle: 'Code with Mureithi',
   description: 'Conversations on code I write. Mainly Rust, Javascript',
   language: 'en-us',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://mureithi.me',
+  siteUrl: process.env.SITE_URL || 'https://mureithi.me',
   siteRepo: 'https://github.com/geofmureithi/my_blog',
   siteLogo: '/static/images/avatar.png',
   image: '/static/images/avatar.png',
@@ -25,6 +25,8 @@ const siteMetadata = {
     simpleAnalytics: false, // true or false
     umamiWebsiteId: '', // e.g. 123e4567-e89b-12d3-a456-426614174000
     googleAnalyticsId: '', // e.g. UA-000000-2 or G-XXXXXXX
+    countlyAppKey: '645ee73c26b1b92f8d9cf30fa52025918dc8c9b3',
+    countlySiteUrl: 'https://countly-server.deploy.fusehq.co/',
   },
   newsletter: {
     // supports mailchimp, buttondown, convertkit, klaviyo, revue
@@ -57,6 +59,7 @@ const siteMetadata = {
       // please provide a link below to your custom theme css file.
       // example: https://giscus.app/themes/custom_example.css
       themeURL: '',
+      lang: 'en',
     },
     utterancesConfig: {
       // Visit the link below, and follow the steps in the 'configuration' section
