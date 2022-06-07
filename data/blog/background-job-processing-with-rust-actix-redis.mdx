@@ -214,6 +214,8 @@ curl -X POST \
 
 You should get back a message: `"ForgottenEmail added to queue"`.
 
+<BlogNewsletterForm title="Like what you are reading?" />
+
 Looking at logs, you should see:
 
 ```
@@ -303,6 +305,7 @@ We could do the same for databases, pools, precompiled templates. This is simila
 As you can see, we were able to offload the heavy load of processing emails from the `actix-web` workers.
 This was just an intro to Apalis, and you should also check out:
 
+- [Code for this example](https://github.com/geofmureithi/awesome-app)
 - [Cargo Docs](https://docs.rs/apalis)
 - [Github Repo](https://github.com/geofmureithi/apalis) Consider giving Apalis a like.
 - [Many More Examples](https://github.com/geofmureithi/apalis/tree/master/examples) - including [postgres](https://github.com/geofmureithi/apalis/tree/master/examples/postgres), [sentry](https://github.com/geofmureithi/apalis/tree/master/examples/sentry) and [prometheus](https://github.com/geofmureithi/apalis/tree/master/examples/prometheus)
