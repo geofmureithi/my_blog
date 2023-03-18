@@ -36,19 +36,21 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
 
             <div className="text-lg leading-8 text-gray-600 dark:text-gray-400">
               <h1 className="text-neutral-900 dark:text-neutral-200">
-                I'm <span className="font-medium">Njuguna Mureithi, </span>a{' '}
+                Hey there! I'm <span className="font-medium">Njuguna Mureithi, </span>a{' '}
                 <span className="font-medium">Senior Engineer</span> from Nairobi, Kenya.
               </h1>
               <p className="mt-4 mb-8">
-                I started my coding journey in 2007 and sold my first software in 2010
+                I'm a self-taught developer with over 10 years of professional experience under my belt.
                 <br />
-                I write code every possible day and have done so gaining 10+ years of real work
-                experience.
+                I love coding every chance I get, and I'm always learning new concepts and languages (right now I'm all about Rust and JavaScript, with a bit of C thrown in for good measure). 
                 <br />
-                I enjoy learning new concepts and languages.
+                When I'm not deep in the code, you can catch me playing some football!
                 <br />
-                I'm currently involved a lot with Rust and Javascript with a little bit of C.
+                Fun fact: I was even part of the winning team at a hackathon once.
                 <br />
+                And if you're interested, I also give talks on WASM and Rust.
+                <br />
+                Let's connect and chat about tech, football, or anything in between!
               </p>
               <p className="my-8">Karibu!</p>
             </div>
