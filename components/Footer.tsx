@@ -1,26 +1,50 @@
 import Link from './Link'
 import siteMetadata from '@/data/siteMetadata'
-import SocialIcon from '@/components/social-icons'
+import { Github, Linkedin, Mail, Rss, Twitter } from 'lucide-react'
+
+const socialLinks = [
+  { label: 'Email', href: `mailto:${siteMetadata.email}`, Icon: Mail, external: false },
+  { label: 'GitHub', href: siteMetadata.github, Icon: Github, external: true },
+  { label: 'Twitter', href: siteMetadata.twitter, Icon: Twitter, external: true },
+  { label: 'LinkedIn', href: siteMetadata.linkedin, Icon: Linkedin, external: true },
+]
 
 export default function Footer() {
   return (
-    <footer>
-      <div className="mt-16 flex flex-col items-center">
-        <div className="mb-3 flex space-x-4">
-          <SocialIcon kind="mail" href={`mailto:${siteMetadata.email}`} size={6} />
-          <SocialIcon kind="github" href={siteMetadata.github} size={6} />
-          <SocialIcon kind="facebook" href={siteMetadata.facebook} size={6} />
-          <SocialIcon kind="youtube" href={siteMetadata.youtube} size={6} />
-          <SocialIcon kind="linkedin" href={siteMetadata.linkedin} size={6} />
-          <SocialIcon kind="twitter" href={siteMetadata.twitter} size={6} />
+    <footer className="mt-16 border-t border-gray-200 pt-8 dark:border-gray-700/60">
+      <div className="flex flex-col items-center pb-10">
+        <div className="flex items-center space-x-5">
+          {socialLinks.map(({ label, href, Icon, external }) => (
+            <Link
+              key={label}
+              href={href}
+              aria-label={label}
+              {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+              className="text-gray-500 transition-colors hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400"
+            >
+              <Icon className="h-5 w-5" aria-hidden="true" />
+            </Link>
+          ))}
+          <Link
+            href="/feed.xml"
+            aria-label="RSS Feed"
+            className="text-gray-500 transition-colors hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400"
+          >
+            <Rss className="h-5 w-5" aria-hidden="true" />
+          </Link>
         </div>
-        <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
-          <div>{siteMetadata.author}</div>
-          <div>{` • `}</div>
-          <div>{`© ${new Date().getFullYear()}`}</div>
-          <div>{` • `}</div>
-          <Link href="/">{siteMetadata.title}</Link>
-        </div>
+        <p className="mt-6 font-mono text-xs text-gray-500 dark:text-gray-400">
+          {siteMetadata.author} © {new Date().getFullYear()} •{' '}
+          <Link
+            href="/"
+            className="transition-colors hover:text-primary-500 dark:hover:text-primary-400"
+          >
+            {siteMetadata.title}
+          </Link>
+        </p>
+        <p className="mt-2 font-mono text-xs text-gray-400 dark:text-gray-500">
+          Built with Next.js &amp; Tailwind CSS
+        </p>
       </div>
     </footer>
   )

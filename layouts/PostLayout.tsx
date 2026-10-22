@@ -4,14 +4,17 @@ import SectionContainer from '@/components/SectionContainer'
 import { BlogSEO } from '@/components/SEO'
 import Image from '@/components/Image'
 import Tag from '@/components/Tag'
+import TOCInline from '@/components/TOCInline'
 import siteMetadata from '@/data/siteMetadata'
 import Comments from '@/components/comments'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import { CoreContent } from '@/lib/utils/contentlayer'
 import { ReactNode } from 'react'
+import { Calendar } from 'lucide-react'
+import type { Toc } from 'types/Toc'
 import type { Blog, Authors } from 'contentlayer/generated'
 
-const editUrl = (slug) => `${siteMetadata.siteRepo}/blob/master/data/blog/${slug}`
+const editUrl = (slug) => `${siteMetadata.siteRepo}/blob/main/data/blog/${slug}`
 const discussUrl = (slug) =>
   `https://mobile.twitter.com/search?q=${encodeURIComponent(
     `${siteMetadata.siteUrl}/blog/${slug}`
@@ -29,10 +32,11 @@ interface Props {
   authorDetails: CoreContent<Authors>[]
   next?: { slug: string; title: string }
   prev?: { slug: string; title: string }
+  toc?: Toc
   children: ReactNode
 }
 
-export default function PostLayout({ content, authorDetails, next, prev, children }: Props) {
+export default function PostLayout({ content, authorDetails, next, prev, toc, children }: Props) {
   const { slug, date, title, tags } = content
 
   return (
@@ -46,17 +50,18 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
       <article>
         <div className="xl:divide-y xl:divide-gray-200 xl:dark:divide-gray-700">
           <header className="pt-6 xl:pb-6">
-            <div className="space-y-1 text-center">
-              <dl className="space-y-10">
-                <div>
+            <div className="space-y-2 text-center">
+              <div className="flex items-center justify-center font-mono text-sm text-gray-500 dark:text-gray-400">
+                <dl>
                   <dt className="sr-only">Published on</dt>
-                  <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                  <dd className="flex items-center">
+                    <Calendar aria-hidden="true" className="mr-1.5 h-4 w-4 text-primary-500" />
                     <time dateTime={date}>
                       {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
                     </time>
                   </dd>
-                </div>
-              </dl>
+                </dl>
+              </div>
               <div>
                 <PageTitle>{title}</PageTitle>
               </div>
@@ -66,41 +71,68 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             className="divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:grid xl:grid-cols-4 xl:gap-x-6 xl:divide-y-0"
             style={{ gridTemplateRows: 'auto 1fr' }}
           >
-            <dl className="pb-10 pt-6 xl:border-b xl:border-gray-200 xl:pt-11 xl:dark:border-gray-700">
-              <dt className="sr-only">Authors</dt>
-              <dd>
-                <ul className="flex justify-center space-x-8 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
-                  {authorDetails.map((author) => (
-                    <li className="flex items-center space-x-2" key={author.name}>
-                      {author.avatar && (
-                        <Image
-                          src={author.avatar}
-                          width={38}
-                          height={38}
-                          alt="avatar"
-                          className="h-10 w-10 rounded-full"
-                        />
-                      )}
-                      <dl className="whitespace-nowrap text-sm font-medium leading-5">
-                        <dt className="sr-only">Name</dt>
-                        <dd className="text-gray-900 dark:text-gray-100">{author.name}</dd>
-                        <dt className="sr-only">Twitter</dt>
-                        <dd>
-                          {author.twitter && (
-                            <Link
-                              href={author.twitter}
-                              className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                            >
-                              {author.twitter.replace('https://twitter.com/', '@')}
-                            </Link>
+            <div className="space-y-8 pb-10 pt-6 xl:pt-11">
+              <dl>
+                <dt className="sr-only">Authors</dt>
+                <dd>
+                  <ul className="flex justify-center space-x-8 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
+                    {authorDetails.map((author) => (
+                      <li
+                        key={author.name}
+                        className="rounded-xl bg-gray-50 p-5 dark:bg-gray-800/40"
+                      >
+                        <div className="flex items-center space-x-3">
+                          {author.avatar && (
+                            <Image
+                              src={author.avatar}
+                              width={38}
+                              height={38}
+                              alt="avatar"
+                              className="rounded-full"
+                            />
                           )}
-                        </dd>
-                      </dl>
-                    </li>
-                  ))}
-                </ul>
-              </dd>
-            </dl>
+                          <dl className="whitespace-nowrap text-sm font-medium leading-5">
+                            <dt className="sr-only">Name</dt>
+                            <dd className="font-display text-gray-900 dark:text-gray-100">
+                              {author.name}
+                            </dd>
+                            {author.occupation && (
+                              <>
+                                <dt className="sr-only">Occupation</dt>
+                                <dd className="text-gray-500 dark:text-gray-400">
+                                  {author.occupation}
+                                </dd>
+                              </>
+                            )}
+                            <dt className="sr-only">Twitter</dt>
+                            <dd>
+                              {author.twitter && (
+                                <Link
+                                  href={author.twitter}
+                                  className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                                >
+                                  {author.twitter.replace('https://twitter.com/', '@')}
+                                </Link>
+                              )}
+                            </dd>
+                          </dl>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </dl>
+              {toc && toc.length > 0 && (
+                <aside className="hidden xl:block">
+                  <h2 className="font-mono text-sm tracking-wide text-gray-500 [font-variant:small-caps] dark:text-gray-400">
+                    Table of contents
+                  </h2>
+                  <div className="mt-3 border-l-2 border-gray-200 pl-4 text-sm leading-6 text-gray-600 dark:border-gray-700 dark:text-gray-300">
+                    <TOCInline toc={toc} toHeading={3} />
+                  </div>
+                </aside>
+              )}
+            </div>
             <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
               <div className="prose max-w-none pb-8 pt-10 dark:prose-dark">{children}</div>
               <div className="pb-6 pt-6 text-sm text-gray-700 dark:text-gray-300">
