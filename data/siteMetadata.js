@@ -7,8 +7,8 @@ const siteMetadata = {
   theme: 'system', // system, dark or light
   siteUrl: process.env.SITE_URL || 'https://mureithi.me',
   siteRepo: 'https://github.com/geofmureithi/my_blog',
-  siteLogo: '/static/images/avatar.png',
-  image: '/static/images/avatar.png',
+  siteLogo: '/static/images/avatar.jpeg',
+  image: '/static/images/avatar.jpeg',
   socialBanner: '/static/images/twitter-card.png',
   email: 'mureithinjuguna@gmail.com',
   github: 'https://github.com/geofmureithi',

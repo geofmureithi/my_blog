@@ -26,7 +26,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
     <>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
       <div className="mt-8 divide-y divide-gray-200 dark:divide-gray-700 md:mt-16">
-        <div className="my-4 space-y-2 pt-6 pb-8 md:space-y-5 xl:grid xl:grid-cols-3">
+        <div className="my-4 space-y-2 pb-8 pt-6 md:space-y-5 xl:grid xl:grid-cols-3">
           <div className="pr-8 xl:col-span-2">
             <p
               className={`mb-4 bg-clip-text text-4xl font-extrabold leading-[60px] tracking-tight text-transparent ${headingColorClass} md:text-6xl md:leading-[86px]`}
@@ -39,7 +39,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
                 I'm <span className="font-medium">Njuguna Mureithi, </span>a{' '}
                 <span className="font-medium">Senior Engineer</span> from Nairobi, Kenya.
               </h1>
-              <p className="mt-4 mb-8">
+              <p className="mb-8 mt-4">
                 I started my coding journey in 2007 and sold my first software in 2010
                 <br />
                 I write code every possible day and have done so gaining 10+ years of real work
@@ -66,7 +66,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
         </div>
       </div>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        <div className="space-y-2 pt-6 pb-8 md:space-y-5">
+        <div className="space-y-2 pb-8 pt-6 md:space-y-5">
           <h1 className="text-2xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-4xl md:leading-14">
             Latest Posts
           </h1>

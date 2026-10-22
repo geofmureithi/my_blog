@@ -1,8 +1,12 @@
-import { writeFileSync } from 'fs'
+import { writeFileSync, readFileSync } from 'fs'
 import globby from 'globby'
 import prettier from 'prettier'
 import siteMetadata from '../data/siteMetadata.js'
-import { allBlogs } from '../.contentlayer/generated/index.mjs'
+
+// Read the generated document JSON directly instead of importing
+// `.contentlayer/generated/index.mjs` (its `assert { type: 'json' }`
+// syntax was removed in newer Node.js versions).
+const allBlogs = JSON.parse(readFileSync('./.contentlayer/generated/Blog/_index.json', 'utf-8'))
 
 async function generate() {
   const prettierConfig = await prettier.resolveConfig('./.prettierrc.js')
