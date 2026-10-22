@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content'
+import BlogPostList from '../../components/BlogPostList.astro'
+import SiteLayout from '../../layouts/SiteLayout.astro'
+import siteMetadata from '../../data/site-metadata'
+
+const slugFor = (tag: string) => tag.toLowerCase().replaceAll(' ', '-')
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft)
+  const tags = [...new Set(posts.flatMap((post) => post.data.tags))]
+  return tags.map((tag) => ({
+    params: { tag: tag.toLowerCase().replaceAll(' ', '-') },
+    props: { tag },
+  }))
+}
+
+const { tag } = Astro.props
+const posts = await getCollection('blog', ({ data }) => !data.draft)
+const filtered = posts
+  .filter((post) => post.data.tags.some((postTag) => slugFor(postTag) === slugFor(tag)))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+const title = tag.charAt(0).toUpperCase() + tag.slice(1)
+const feedTitle = `${tag.toLowerCase()} tags - ${siteMetadata.author} - RSS feed`
+const feedHref = `${siteMetadata.siteUrl}/tags/${slugFor(tag)}/feed.xml`
+---
+
+<SiteLayout
+  title={`${tag.toLowerCase()} - ${siteMetadata.headerTitle}`}
+  description={`${tag.toLowerCase()} tags - ${siteMetadata.author}`}
+  tagFeedHref={feedHref}
+  tagFeedTitle={feedTitle}
+>
+  <BlogPostList posts={filtered} title={title} />
+</SiteLayout>

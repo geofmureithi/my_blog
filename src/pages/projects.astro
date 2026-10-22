@@ -1,0 +1,60 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro'
+import siteMetadata from '../data/site-metadata'
+
+const projects = [
+  {
+    title: 'Apalis',
+    description: 'Apalis is a rust library for efficient and reliable background jobs processing using the actor model approach.',
+    href: 'https://github.com/geofmureithi/apalis',
+    image: '/static/images/apalis.webp',
+  },
+  {
+    title: 'MPesa Rest API for Node.js',
+    description: 'M-Pesa Library for Node.js using REST API',
+    href: 'https://github.com/safaricom/mpesa-node-library',
+    image: '/static/images/mpesa-node.webp',
+  },
+  {
+    title: 'MPesa Rest API for .Net',
+    description: 'M-Pesa Rest API Library for .Net/C#.',
+    href: 'https://github.com/geofmureithi/Mpesa.Net',
+    image: '/static/images/mpesa.netlogo.webp',
+  },
+]
+---
+
+<SiteLayout title={`Projects - ${siteMetadata.author}`} description={siteMetadata.description}>
+  <div class="divide-y divide-gray-200 dark:divide-gray-700">
+    <header class="space-y-2 pt-6 pb-8 md:space-y-5">
+      <h1 class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+        Projects
+      </h1>
+      <p class="text-lg leading-7 text-gray-500 dark:text-gray-400">
+        Some of the things I have been working on
+      </p>
+    </header>
+    <div class="-m-4 flex flex-wrap py-12">
+      {projects.map((project) => (
+        <div class="p-4 md:w-1/2">
+          <article class="h-full overflow-hidden rounded-md border-2 border-gray-200/60 dark:border-gray-700/60">
+            <a href={project.href} target="_blank" rel="noreferrer" aria-label={`Link to ${project.title}`} class="block">
+              <img src={project.image} alt={project.title} class="aspect-video w-full object-cover object-center" />
+            </a>
+            <div class="p-6">
+              <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                <a href={project.href} target="_blank" rel="noreferrer" aria-label={`Link to ${project.title}`}>
+                  {project.title}
+                </a>
+              </h2>
+              <p class="mt-2 text-gray-500 dark:text-gray-400">{project.description}</p>
+              <a href={project.href} target="_blank" rel="noreferrer" aria-label={`Link to ${project.title}`} class="mt-2 inline-block text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                Learn more →
+              </a>
+            </div>
+          </article>
+        </div>
+      ))}
+    </div>
+  </div>
+</SiteLayout>

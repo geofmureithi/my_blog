@@ -1,0 +1,56 @@
+---
+interface Heading {
+  depth: number
+  value: string
+  url: string
+}
+
+interface Props {
+  toc: Heading[]
+  indentDepth?: number
+  fromHeading?: number
+  toHeading?: number
+  asDisclosure?: boolean
+  exclude?: string | string[]
+}
+
+const {
+  toc,
+  indentDepth = 3,
+  fromHeading = 1,
+  toHeading = 6,
+  asDisclosure = false,
+  exclude = '',
+} = Astro.props as Props
+const excluded = new RegExp(
+  '^(' + (Array.isArray(exclude) ? exclude.join('|') : exclude) + ')$',
+  'i'
+)
+const filteredToc = toc.filter(
+  (heading) =>
+    heading.depth >= fromHeading && heading.depth <= toHeading && !excluded.test(heading.value)
+)
+---
+
+{asDisclosure ? (
+  <details open>
+    <summary class="ml-6 pt-2 pb-2 text-xl font-bold">Table of Contents</summary>
+    <div class="ml-6">
+      <ul>
+        {filteredToc.map((heading) => (
+          <li class={heading.depth >= indentDepth ? 'ml-6' : ''}>
+            <a href={heading.url}>{heading.value}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </details>
+) : (
+  <ul>
+    {filteredToc.map((heading) => (
+      <li class={heading.depth >= indentDepth ? 'ml-6' : ''}>
+        <a href={heading.url}>{heading.value}</a>
+      </li>
+    ))}
+  </ul>
+)}
