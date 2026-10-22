@@ -57,10 +57,14 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
             <Image
               className="rounded object-cover object-center"
               alt="hero"
-              layout="responsive"
               width={1280}
               height={960}
               src="/static/images/who-am-i.jpeg"
+              sizes="100vw"
+              style={{
+                width: '100%',
+                height: 'auto',
+              }}
             />
           </div>
         </div>

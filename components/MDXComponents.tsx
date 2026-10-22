@@ -1,7 +1,6 @@
-/* eslint-disable react/display-name */
 import React from 'react'
-import { useMDXComponent } from 'next-contentlayer/hooks'
-import { ComponentMap } from 'mdx-bundler/client'
+import { useMDXComponent } from 'next-contentlayer2/hooks'
+import type { MDXComponents as MDXComponentsType } from 'mdx/types'
 import { coreContent } from '@/lib/utils/contentlayer'
 import Image from './Image'
 import CustomLink from './Link'
@@ -26,7 +25,7 @@ const Wrapper = ({ layout, content, ...rest }: MDXLayout) => {
   return <Layout content={content} {...rest} />
 }
 
-export const MDXComponents: ComponentMap = {
+export const MDXComponents: MDXComponentsType = {
   Image,
   TOCInline,
   a: CustomLink,
@@ -36,8 +35,13 @@ export const MDXComponents: ComponentMap = {
 }
 
 export const MDXLayoutRenderer = ({ layout, content, ...rest }: MDXLayout) => {
+  // contentlayer compiles one component per document, so this cannot be a static component.
+
   const MDXLayout = useMDXComponent(content.body.code)
   const mainContent = coreContent(content)
 
-  return <MDXLayout layout={layout} content={mainContent} components={MDXComponents} {...rest} />
+  return (
+    // eslint-disable-next-line react-hooks/static-components
+    <MDXLayout layout={layout} content={mainContent} components={MDXComponents} {...rest} />
+  )
 }

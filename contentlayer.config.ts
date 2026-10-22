@@ -1,9 +1,8 @@
-import { defineDocumentType, ComputedFields, makeSource } from 'contentlayer/source-files'
+import { defineDocumentType, ComputedFields, makeSource } from 'contentlayer2/source-files'
 import readingTime from 'reading-time'
 import path from 'path'
 // Remark packages
 import remarkGfm from 'remark-gfm'
-import remarkFootnotes from 'remark-footnotes'
 import remarkMath from 'remark-math'
 import remarkExtractFrontmatter from './lib/remark-extract-frontmatter'
 import remarkCodeTitles from './lib/remark-code-title'
@@ -76,7 +75,6 @@ export default makeSource({
       remarkExtractFrontmatter,
       remarkGfm,
       remarkCodeTitles,
-      [remarkFootnotes, { inlineNotes: true }],
       remarkMath,
       remarkImgToJsx,
     ],

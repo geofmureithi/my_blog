@@ -5,7 +5,7 @@ import siteMetadata from '../data/siteMetadata.js'
 import { allBlogs } from '../.contentlayer/generated/index.mjs'
 
 async function generate() {
-  const prettierConfig = await prettier.resolveConfig('./.prettierrc.js')
+  const prettierConfig = await prettier.resolveConfig('./prettier.config.js')
   const contentPages = allBlogs
     .map((x) => `/${x._raw.flattenedPath}`)
     .filter((x) => !x.draft && !x.canonicalUrl)
@@ -41,7 +41,7 @@ async function generate() {
         </urlset>
     `
 
-  const formatted = prettier.format(sitemap, {
+  const formatted = await prettier.format(sitemap, {
     ...prettierConfig,
     parser: 'html',
   })
