@@ -2,8 +2,9 @@
 import { getCollection } from 'astro:content'
 import SiteLayout from '../layouts/SiteLayout.astro'
 import siteMetadata from '../data/site-metadata'
+import { tagSlug } from '../lib/tags'
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).toSorted(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 )
 const formatDate = (date: Date) =>
@@ -27,9 +28,13 @@ const formatDate = (date: Date) =>
             I'm Njuguna Mureithi, a Senior Engineer from Nairobi, Kenya.
           </h1>
           <p class="mt-4 mb-8">
-            I started my coding journey in 2007 and sold my first software in 2010<br />
-            I write code every possible day and have done so gaining 10+ years of real work experience.<br />
-            I enjoy learning new concepts and languages.<br />
+            I started my coding journey in 2007 and sold my first software in 2010
+            <br />
+            I write code every possible day and have done so gaining 10+ years of real work
+            experience.
+            <br />
+            I enjoy learning new concepts and languages.
+            <br />
             I'm currently involved a lot with Rust and Javascript with a little bit of C.
           </p>
           <p class="my-8">Karibu!</p>
@@ -75,7 +80,7 @@ const formatDate = (date: Date) =>
                     <div class="flex flex-wrap">
                       {post.data.tags.map((tag) => (
                         <a
-                          href={`/tags/${tag.toLowerCase().replaceAll(' ', '-')}`}
+                          href={`/tags/${tagSlug(tag)}`}
                           class="mr-3 text-sm font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                         >
                           {tag}
@@ -84,7 +89,9 @@ const formatDate = (date: Date) =>
                     </div>
                   </div>
                   {post.data.summary && (
-                    <div class="prose max-w-none text-gray-500 dark:text-gray-400">{post.data.summary}</div>
+                    <div class="prose max-w-none text-gray-500 dark:text-gray-400">
+                      {post.data.summary}
+                    </div>
                   )}
                 </div>
                 <div class="text-base font-medium leading-6">

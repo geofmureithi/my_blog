@@ -8,7 +8,13 @@ interface Props {
 const { slug, description, pageUrl } = Astro.props as Props
 ---
 
-<div id="comments-container" data-giscus data-slug={`blog/${slug}`} data-description={description} data-back-link={pageUrl}>
+<div
+  id="comments-container"
+  data-giscus
+  data-slug={`blog/${slug}`}
+  data-description={description}
+  data-back-link={pageUrl}
+>
   <button type="button">Load Comments</button>
 </div>
 
@@ -16,37 +22,41 @@ const { slug, description, pageUrl } = Astro.props as Props
   const comments = document.querySelector('[data-giscus]')
   const loadComments = comments.querySelector('button')
 
-  loadComments.addEventListener('click', () => {
-    const params = new URLSearchParams({
-      origin: `${window.location.href.split('#')[0]}#comments-container`,
-      session: '',
-      theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-      reactionsEnabled: '1',
-      emitMetadata: '0',
-      inputPosition: 'undefined',
-      repo: 'geofmureithi/my_blog',
-      repoId: 'R_kgDOHc3xng',
-      category: 'General',
-      categoryId: 'DIC_kwDOHc3xns4CPegj',
-      strict: '0',
-      description: comments.dataset.description,
-      backLink: comments.dataset.backLink,
-      term: comments.dataset.slug,
-    })
-    const frame = document.createElement('iframe')
-    frame.className = 'giscus-frame'
-    frame.title = 'Comments'
-    frame.scrolling = 'no'
-    frame.allow = 'clipboard-write'
-    frame.style.width = '100%'
-    frame.src = `https://giscus.app/en/widget?${params}`
-    comments.replaceChildren(frame)
+  loadComments.addEventListener(
+    'click',
+    () => {
+      const params = new URLSearchParams({
+        origin: `${window.location.href.split('#')[0]}#comments-container`,
+        session: '',
+        theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        inputPosition: 'undefined',
+        repo: 'geofmureithi/my_blog',
+        repoId: 'R_kgDOHc3xng',
+        category: 'General',
+        categoryId: 'DIC_kwDOHc3xns4CPegj',
+        strict: '0',
+        description: comments.dataset.description,
+        backLink: comments.dataset.backLink,
+        term: comments.dataset.slug,
+      })
+      const frame = document.createElement('iframe')
+      frame.className = 'giscus-frame'
+      frame.title = 'Comments'
+      frame.scrolling = 'no'
+      frame.allow = 'clipboard-write'
+      frame.style.width = '100%'
+      frame.src = `https://giscus.app/en/widget?${params}`
+      comments.replaceChildren(frame)
 
-    window.addEventListener('message', (event) => {
-      if (event.origin !== 'https://giscus.app' || event.source !== frame.contentWindow) return
-      if (event.data?.giscus?.resizeHeight) {
-        frame.style.height = `${event.data.giscus.resizeHeight}px`
-      }
-    })
-  }, { once: true })
+      window.addEventListener('message', (event) => {
+        if (event.origin !== 'https://giscus.app' || event.source !== frame.contentWindow) return
+        if (event.data?.giscus?.resizeHeight) {
+          frame.style.height = `${event.data.giscus.resizeHeight}px`
+        }
+      })
+    },
+    { once: true }
+  )
 </script>

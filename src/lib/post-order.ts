@@ -8,5 +8,5 @@ const sourcePostOrder = [
 
 export function orderPosts<T extends { id: string }>(posts: T[]) {
   const order = new Map(sourcePostOrder.map((id, index) => [id, index]))
-  return [...posts].sort((a, b) => (order.get(a.id) ?? Infinity) - (order.get(b.id) ?? Infinity))
+  return posts.toSorted((a, b) => (order.get(a.id) ?? Infinity) - (order.get(b.id) ?? Infinity))
 }

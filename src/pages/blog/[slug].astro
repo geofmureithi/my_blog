@@ -4,6 +4,11 @@ import TOCInline from '../../components/TOCInline.astro'
 import GiscusComments from '../../components/GiscusComments.astro'
 import SiteLayout from '../../layouts/SiteLayout.astro'
 import siteMetadata from '../../data/site-metadata'
+import { personEntity } from '../../lib/structured-data'
+import { tagSlug } from '../../lib/tags'
+import sharp from 'sharp'
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 
 export async function getStaticPaths() {
   const entries = await getCollection('blog')
@@ -13,32 +18,67 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props
-const allPosts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft)).toSorted(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 )
 const previousPost = allPosts[allPosts.findIndex((post) => post.id === entry.id) + 1]
 const { Content, headings } = await render(entry)
 const toc = headings.map(({ depth, slug, text }) => ({ depth, value: text, url: `#${slug}` }))
-const author = await getEntry('authors', entry.data.authors[0] || 'default')
+const authorIds = entry.data.authors.length ? entry.data.authors : ['default']
+const authorEntries = (await Promise.all(authorIds.map((id) => getEntry('authors', id)))).filter(
+  (authorEntry) => authorEntry !== undefined
+)
+const author = authorEntries[0] ?? (await getEntry('authors', 'default'))
+const schemaAuthors = authorEntries.length
+  ? authorEntries.map((authorEntry) => personEntity(authorEntry.data, authorEntry.id))
+  : author
+    ? [personEntity(author.data)]
+    : [{ '@type': 'Person', name: siteMetadata.author }]
 const published = entry.data.date.toISOString()
-const modified = (entry.data.lastmod || entry.data.date).toISOString()
+const modified = entry.data.lastmod?.toISOString()
 const pageUrl = siteMetadata.siteUrl + '/blog/' + entry.id
-const image = entry.data.images[0] || siteMetadata.socialBanner
+const canonicalUrl = entry.data.canonicalUrl || pageUrl
+const images = entry.data.images.length ? entry.data.images : [`/og/${entry.id}.png`]
+const siteOrigin = new URL(siteMetadata.siteUrl).origin
+const imageUrls = images.map((image) => new URL(image, siteMetadata.siteUrl).href)
+const imageMetadata = await Promise.all(
+  images.map(async (image) => {
+    const url = new URL(image, siteMetadata.siteUrl)
+    if (url.origin !== siteOrigin) return {}
+    if (url.pathname.startsWith('/og/')) return { width: 1200, height: 600, type: 'image/png' }
+    const filePath = join(
+      process.cwd(),
+      'public',
+      decodeURIComponent(url.pathname).replace(/^\/+/, '')
+    )
+    const metadata = await sharp(await readFile(filePath)).metadata()
+    return {
+      width: metadata.width,
+      height: metadata.height,
+      type:
+        metadata.format === 'svg'
+          ? 'image/svg+xml'
+          : metadata.format
+            ? `image/${metadata.format}`
+            : undefined,
+    }
+  })
+)
 const articleData = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
   headline: entry.data.title,
-  image: [{ '@type': 'ImageObject', url: siteMetadata.siteUrl + image }],
+  image: imageUrls.map((url, index) => ({ '@type': 'ImageObject', url, ...imageMetadata[index] })),
   datePublished: published,
-  dateModified: modified,
-  author: [{ '@type': 'Person', name: author?.data.name || siteMetadata.author }],
+  ...(modified && { dateModified: modified }),
+  author: schemaAuthors,
   publisher: {
     '@type': 'Organization',
     name: siteMetadata.author,
     logo: { '@type': 'ImageObject', url: siteMetadata.siteUrl + siteMetadata.siteLogo },
   },
-  description: entry.data.summary,
+  description: entry.data.summary || siteMetadata.description,
 }
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat(siteMetadata.locale, {
@@ -53,11 +93,15 @@ const formatDate = (date: Date) =>
 <SiteLayout
   title={entry.data.title}
   description={entry.data.summary || siteMetadata.description}
-  canonical={entry.data.canonicalUrl || pageUrl}
+  canonical={canonicalUrl}
   ogType="article"
-  ogImage={image}
+  ogImages={images}
+  ogImageAlt={entry.data.title}
+  ogImageMetadata={imageMetadata}
   articlePublished={published}
   articleModified={modified}
+  articleSection={entry.data.tags[0]}
+  articleTags={entry.data.tags}
   structuredData={articleData}
 >
   <article>
@@ -120,28 +164,33 @@ const formatDate = (date: Date) =>
           </div>
           <div class="pt-6 pb-6 text-sm text-gray-700 dark:text-gray-300">
             <a
-              href={'https://mobile.twitter.com/search?q=' +
-                encodeURIComponent(pageUrl)}
+              href={'https://mobile.twitter.com/search?q=' + encodeURIComponent(pageUrl)}
               rel="nofollow"
             >
               Discuss on Twitter
             </a>
             {' • '}
-            <a href={siteMetadata.siteRepo + '/blob/master/data/blog/' + entry.id}>
+            <a href={siteMetadata.siteRepo + '/blob/main/src/content/blog/' + entry.id + '.mdx'}>
               View on GitHub
             </a>
           </div>
-          <GiscusComments slug={entry.id} description={entry.data.summary || ''} pageUrl={pageUrl} />
+          <GiscusComments
+            slug={entry.id}
+            description={entry.data.summary || ''}
+            pageUrl={pageUrl}
+          />
         </div>
         <footer>
           <div class="divide-gray-200 text-sm font-medium leading-5 dark:divide-gray-700 xl:col-start-1 xl:row-start-2 xl:divide-y">
             {entry.data.tags.length > 0 && (
               <div class="py-4 xl:py-8">
-                <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Tags</h2>
+                <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  Tags
+                </h2>
                 <div class="flex flex-wrap">
                   {entry.data.tags.map((tag) => (
                     <a
-                      href={'/tags/' + tag.toLowerCase().replaceAll(' ', '-')}
+                      href={'/tags/' + tagSlug(tag)}
                       class="mr-3 text-sm font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                     >
                       {tag}
@@ -154,13 +203,21 @@ const formatDate = (date: Date) =>
           <div class="pt-4 xl:pt-8">
             {previousPost && (
               <div class="pt-6 pb-4">
-                <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Previous Article</h2>
-                <a href={`/blog/${previousPost.id}`} class="mt-2 inline-block text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  Previous Article
+                </h2>
+                <a
+                  href={`/blog/${previousPost.id}`}
+                  class="mt-2 inline-block text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                >
                   {previousPost.data.title}
                 </a>
               </div>
             )}
-            <a href="/blog" class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+            <a
+              href="/blog"
+              class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+            >
               &larr; Back to the blog
             </a>
           </div>

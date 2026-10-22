@@ -12,6 +12,7 @@ const siteMetadata = {
   email: 'mureithinjuguna@gmail.com',
   github: 'https://github.com/geofmureithi',
   twitter: 'https://twitter.com/tweetofnjuguna',
+  twitterHandle: '@tweetofnjuguna',
   linkedin: 'https://www.linkedin.com/in/njuguna-m-152b4ba4/',
   locale: 'en-US',
 }

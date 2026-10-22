@@ -11,14 +11,21 @@ type FeedPost = {
 }
 
 const escapeXml = (value: string) =>
-  value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&apos;')
+  value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;')
 
 export function renderRssFeed(posts: FeedPost[], allPosts: FeedPost[], feedPath: string) {
   const lastBuildDate = new Date(Math.max(...allPosts.map((post) => post.data.date.valueOf())))
   const items = posts
     .map((post) => {
       const url = `${siteMetadata.siteUrl}/blog/${post.id}`
-      const categories = post.data.tags.map((tag) => `<category>${escapeXml(tag.toLowerCase())}</category>`).join('')
+      const categories = post.data.tags
+        .map((tag) => `<category>${escapeXml(tag.toLowerCase())}</category>`)
+        .join('')
       return `<item>
 <guid>${url}</guid>
 <title>${escapeXml(post.data.title)}</title>

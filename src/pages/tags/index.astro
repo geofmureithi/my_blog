@@ -2,13 +2,17 @@
 import { getCollection } from 'astro:content'
 import SiteLayout from '../../layouts/SiteLayout.astro'
 import siteMetadata from '../../data/site-metadata'
+import { uniqueTags } from '../../lib/tags'
 
 const posts = await getCollection('blog', ({ data }) => !data.draft)
-const counts = new Map<string, number>()
+const counts = new Map<string, { tag: string; count: number }>()
 for (const post of posts) {
-  for (const tag of post.data.tags) counts.set(tag, (counts.get(tag) || 0) + 1)
+  for (const { slug, tag } of uniqueTags(post.data.tags)) {
+    const current = counts.get(slug)
+    counts.set(slug, { tag: current?.tag ?? tag, count: (current?.count ?? 0) + 1 })
+  }
 }
-const tags = [...counts.entries()].sort((a, b) => b[1] - a[1])
+const tags = [...counts].toSorted((a, b) => b[1].count - a[1].count)
 ---
 
 <SiteLayout title={`Tags - ${siteMetadata.author}`} description="Things I blog about">
@@ -19,19 +23,17 @@ const tags = [...counts.entries()].sort((a, b) => b[1] - a[1])
       </h1>
     </header>
     <div class="flex max-w-lg flex-wrap">
-      {tags.map(([tag, count]) => (
+      {tags.map(([slug, { tag, count }]) => (
         <div class="mt-2 mb-2 mr-5">
           <a
-            href={`/tags/${tag.toLowerCase().replaceAll(' ', '-')}`}
+            href={`/tags/${slug}`}
             class="mr-1 text-sm font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
           >
             {tag}
           </a>
-          <a
-            href={`/tags/${tag.toLowerCase().replaceAll(' ', '-')}`}
-            class="text-sm font-medium text-gray-500 dark:text-gray-400"
-          >
-            {' '}({count})
+          <a href={`/tags/${slug}`} class="text-sm font-medium text-gray-500 dark:text-gray-400">
+            {' '}
+            ({count})
           </a>
         </div>
       ))}

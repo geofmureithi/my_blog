@@ -21,6 +21,7 @@ const authors = defineCollection({
   loader: glob({ pattern: '*.mdx', base: './src/content/authors' }),
   schema: z.object({
     name: z.string(),
+    alternateName: z.string().optional(),
     avatar: z.string().optional(),
     occupation: z.string().optional(),
     company: z.string().optional(),
