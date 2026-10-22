@@ -1,6 +1,6 @@
 import { writeFileSync, mkdirSync } from 'fs'
 import path from 'path'
-import GithubSlugger from 'github-slugger'
+import { slug } from 'github-slugger'
 import { escape } from './htmlEscaper.mjs'
 import siteMetadata from '../data/siteMetadata.js'
 import { allBlogs } from '../.contentlayer/generated/index.mjs'
@@ -12,7 +12,7 @@ export async function getAllTags() {
   allBlogs.forEach((file) => {
     if (file.tags && file.draft !== true) {
       file.tags.forEach((tag) => {
-        const formattedTag = GithubSlugger.slug(tag)
+        const formattedTag = slug(tag)
         if (formattedTag in tagCount) {
           tagCount[formattedTag] += 1
         } else {
@@ -66,7 +66,7 @@ async function generate() {
     const tags = await getAllTags()
     for (const tag of Object.keys(tags)) {
       const filteredPosts = allBlogs.filter(
-        (post) => post.draft !== true && post.tags.map((t) => GithubSlugger.slug(t)).includes(tag)
+        (post) => post.draft !== true && post.tags.map((t) => slug(t)).includes(tag)
       )
       const rss = generateRss(filteredPosts, `tags/${tag}/feed.xml`)
       const rssPath = path.join('public', 'tags', tag)

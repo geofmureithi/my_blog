@@ -55,9 +55,8 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
           </div>
           <div className="hidden xl:block">
             <Image
-              className="rounded object-cover object-center"
+              className="w-full h-auto rounded object-cover object-center"
               alt="hero"
-              layout="responsive"
               width={1280}
               height={960}
               src="/static/images/who-am-i.jpeg"
