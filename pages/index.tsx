@@ -9,7 +9,7 @@ import { InferGetStaticPropsType } from 'next'
 import NewsletterForm from '@/components/NewsletterForm'
 import { allBlogs } from 'contentlayer/generated'
 import Image from 'next/image'
-import { ArrowRight, Github, Linkedin, Mail, MapPin, Twitter } from 'lucide-react'
+import { ArrowRight, Github, Linkedin, Mail, MapPin, Twitter, Clock } from 'lucide-react'
 
 const socialButtonClass =
   'inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-500 transition-colors duration-200 hover:border-primary-500 hover:bg-primary-500/10 hover:text-primary-600 dark:border-gray-700 dark:text-gray-400 dark:hover:border-primary-400 dark:hover:bg-primary-400/10 dark:hover:text-primary-400'
@@ -91,6 +91,34 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
               src="/static/images/who-am-i.jpeg"
               width={640}
             />
+            <div className="absolute bottom-4 left-4 right-4 overflow-hidden rounded-xl border border-gray-700/60 bg-gray-900/95 shadow-2xl backdrop-blur sm:left-4 sm:right-auto sm:w-80">
+              <div className="flex items-center gap-1.5 border-b border-gray-700/60 px-4 py-2.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-red-400" aria-hidden="true" />
+                <span className="h-2.5 w-2.5 rounded-full bg-amber-400" aria-hidden="true" />
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" aria-hidden="true" />
+                <span className="ml-2 font-mono text-xs text-gray-500">njuguna@blog — zsh</span>
+              </div>
+              <div className="space-y-1 px-4 py-3 font-mono text-xs leading-5 text-gray-400 sm:text-[13px]">
+                <p>
+                  <span className="text-primary-400">$</span> whoami
+                </p>
+                <p className="text-gray-200">njuguna-mureithi — senior engineer</p>
+                <p>
+                  <span className="text-primary-400">$</span> cat stack.txt
+                </p>
+                <p className="text-gray-200">rust · javascript · c · next.js</p>
+                <p>
+                  <span className="text-primary-400">$</span> uptime
+                </p>
+                <p className="text-gray-200">
+                  10+ years shipping
+                  <span
+                    className="ml-0.5 inline-block h-3.5 w-1.5 translate-y-0.5 animate-pulse bg-primary-400"
+                    aria-hidden="true"
+                  />
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -105,7 +133,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
           {!posts.length && <p className="text-gray-500 dark:text-gray-400">No posts found.</p>}
           {latestPosts.map((post) => {
-            const { slug, date, title, summary, tags } = post
+            const { slug, date, title, summary, tags, readingTime } = post
             return (
               <div key={slug}>
                 <Card title={title} description={summary} href={`/blog/${slug}`} />
@@ -116,6 +144,10 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
                   >
                     {formatDate(date)}
                   </time>
+                  <span className="mr-4 inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 font-mono text-xs text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                    <Clock className="h-3 w-3" aria-hidden="true" />
+                    {readingTime.text.replace(' min read', ' min')}
+                  </span>
                   {tags.map((tag) => (
                     <Tag key={tag} text={tag} />
                   ))}

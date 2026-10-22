@@ -5,7 +5,7 @@ import 'katex/dist/katex.css'
 import { ThemeProvider } from 'next-themes'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
-import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google'
+import { Inter, Space_Grotesk, Fira_Code } from 'next/font/google'
 
 import siteMetadata from '@/data/siteMetadata'
 import Analytics from '@/components/analytics'
@@ -23,18 +23,16 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 })
 
-const jetBrainsMono = JetBrains_Mono({
+const firaCode = Fira_Code({
   subsets: ['latin'],
-  variable: '--font-jetbrains-mono',
+  variable: '--font-fira-code',
   display: 'swap',
 })
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider attribute="class" defaultTheme={siteMetadata.theme}>
-      <div
-        className={`${inter.variable} ${spaceGrotesk.variable} ${jetBrainsMono.variable} font-sans`}
-      >
+      <div className={`${inter.variable} ${spaceGrotesk.variable} ${firaCode.variable} font-sans`}>
         <Head>
           <meta content="width=device-width, initial-scale=1" name="viewport" />
         </Head>

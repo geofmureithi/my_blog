@@ -34,7 +34,7 @@ module.exports = {
         //@ts-ignore
         display: ['var(--font-space-grotesk)', ...defaultTheme.fontFamily.sans],
         //@ts-ignore
-        mono: ['var(--font-jetbrains-mono)', ...defaultTheme.fontFamily.mono],
+        mono: ['var(--font-fira-code)', ...defaultTheme.fontFamily.mono],
       },
       colors: {
         primary: colors.teal,

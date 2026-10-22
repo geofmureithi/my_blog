@@ -5,7 +5,7 @@ import Pagination from '@/components/Pagination'
 import { ComponentProps, useState } from 'react'
 import formatDate from '@/lib/utils/formatDate'
 import { CoreContent } from '@/lib/utils/contentlayer'
-import { Search } from 'lucide-react'
+import { Search, Clock } from 'lucide-react'
 import type { Blog } from 'contentlayer/generated'
 
 interface Props {
@@ -55,14 +55,18 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
             </li>
           )}
           {displayPosts.map((post) => {
-            const { slug, date, title, summary, tags } = post
+            const { slug, date, title, summary, tags, readingTime } = post
             return (
               <li key={slug} className="py-10">
                 <article className="space-y-3 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
                   <dl>
                     <dt className="sr-only">Published on</dt>
-                    <dd className="font-mono text-sm text-gray-500 dark:text-gray-400">
+                    <dd className="flex flex-col gap-1.5 font-mono text-sm text-gray-500 dark:text-gray-400">
                       <time dateTime={date}>{formatDate(date)}</time>
+                      <span className="inline-flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                        <Clock className="h-3 w-3" aria-hidden="true" />
+                        {readingTime.text}
+                      </span>
                     </dd>
                   </dl>
                   <div className="space-y-3 xl:col-span-3">

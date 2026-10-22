@@ -10,7 +10,8 @@ import Comments from '@/components/comments'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import { CoreContent } from '@/lib/utils/contentlayer'
 import { ReactNode } from 'react'
-import { Calendar } from 'lucide-react'
+import { Calendar, Clock } from 'lucide-react'
+import ReadingProgress from '@/components/ReadingProgress'
 import type { Toc } from 'types/Toc'
 import type { Blog, Authors } from 'contentlayer/generated'
 
@@ -37,7 +38,7 @@ interface Props {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, toc, children }: Props) {
-  const { slug, date, title, tags } = content
+  const { slug, date, title, tags, readingTime } = content
 
   return (
     <SectionContainer>
@@ -47,11 +48,12 @@ export default function PostLayout({ content, authorDetails, next, prev, toc, ch
         {...content}
       />
       <ScrollTopAndComment />
+      <ReadingProgress />
       <article>
         <div className="xl:divide-y xl:divide-gray-200 xl:dark:divide-gray-700">
           <header className="pt-6 xl:pb-6">
             <div className="space-y-2 text-center">
-              <div className="flex items-center justify-center font-mono text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center justify-center space-x-5 font-mono text-sm text-gray-500 dark:text-gray-400">
                 <dl>
                   <dt className="sr-only">Published on</dt>
                   <dd className="flex items-center">
@@ -59,6 +61,13 @@ export default function PostLayout({ content, authorDetails, next, prev, toc, ch
                     <time dateTime={date}>
                       {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
                     </time>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt className="sr-only">Reading time</dt>
+                  <dd className="flex items-center">
+                    <Clock aria-hidden="true" className="mr-1.5 h-4 w-4 text-primary-500" />
+                    {readingTime.text}
                   </dd>
                 </dl>
               </div>
