@@ -40,11 +40,12 @@ const pageUrl = siteMetadata.siteUrl + '/blog/' + entry.id
 const canonicalUrl = entry.data.canonicalUrl || pageUrl
 const images = entry.data.images.length ? entry.data.images : [`/og/${entry.id}.png`]
 const siteOrigin = new URL(siteMetadata.siteUrl).origin
-const imageUrls = images.map((image) => new URL(image, siteMetadata.siteUrl).href)
+const imageUrls = images.map((image) => new URL(image, siteMetadata.ogImageBaseUrl).href)
 const imageMetadata = await Promise.all(
   images.map(async (image) => {
-    const url = new URL(image, siteMetadata.siteUrl)
-    if (url.origin !== siteOrigin) return {}
+    const url = new URL(image, siteMetadata.ogImageBaseUrl)
+    const ogImageOrigin = new URL(siteMetadata.ogImageBaseUrl).origin
+    if (url.origin !== siteOrigin && url.origin !== ogImageOrigin) return {}
     if (url.pathname.startsWith('/og/')) return { width: 1200, height: 600, type: 'image/png' }
     const filePath = join(
       process.cwd(),

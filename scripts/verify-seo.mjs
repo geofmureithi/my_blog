@@ -5,7 +5,9 @@ import { parse as parseYaml } from 'yaml'
 const metadataSource = await readFile(join(process.cwd(), 'src/data/site-metadata.ts'), 'utf8')
 const siteUrl = metadataSource.match(/siteUrl:\s*'([^']+)'/)?.[1]
 if (!siteUrl) throw new Error('Could not read siteUrl from src/data/site-metadata.ts')
+const ogImageBaseUrl = process.env.OG_IMAGE_BASE_URL || siteUrl
 const siteOrigin = new URL(siteUrl).origin
+const ogImageOrigin = new URL(ogImageBaseUrl).origin
 const dist = join(process.cwd(), 'dist')
 const errors = []
 
@@ -111,7 +113,7 @@ function parseJsonLd(html, label) {
 }
 
 function imageUrl(image) {
-  return new URL(image, siteUrl).href
+  return new URL(image, ogImageBaseUrl).href
 }
 
 function expectedImageType(url) {
@@ -242,10 +244,15 @@ for (const path of pages) {
     `${label}: every og:image must have alt text`
   )
   assert(Boolean(twitterAlt), `${label}: twitter:image:alt is required`)
-  assert(
-    /\bindex\b/i.test(robotsMeta) && /\bfollow\b/i.test(robotsMeta),
-    `${label}: page must be indexable and allow link following`
-  )
+  if (label === '404.html') {
+    assert(/\bnoindex\b/i.test(robotsMeta), '404.html: page must not be indexed')
+    assert(/\bfollow\b/i.test(robotsMeta), '404.html: page must allow link following')
+  } else {
+    assert(
+      /\bindex\b/i.test(robotsMeta) && /\bfollow\b/i.test(robotsMeta),
+      `${label}: page must be indexable and allow link following`
+    )
+  }
   assert(
     /max-image-preview:\s*large/i.test(robotsMeta),
     `${label}: robots meta must allow large image previews`
@@ -274,7 +281,7 @@ for (const path of pages) {
   for (const imageGroup of ogImageGroups) {
     try {
       const image = new URL(imageGroup.url)
-      if (image.origin !== siteOrigin) continue
+      if (image.origin !== siteOrigin && image.origin !== ogImageOrigin) continue
       const imagePath = join(dist, decodeURIComponent(image.pathname).replace(/^\/+/, ''))
       await access(imagePath).catch(() =>
         errors.push(`${label}: OG image does not exist at ${imagePath}`)
@@ -356,7 +363,7 @@ for (const file of postFiles) {
   const expectedImages =
     Array.isArray(frontmatter.images) && frontmatter.images.length
       ? frontmatter.images.map(imageUrl)
-      : [`${siteUrl}/og/${slug}.png`]
+      : [`${ogImageBaseUrl}/og/${slug}.png`]
   assert(
     JSON.stringify(article.ogImages) === JSON.stringify(expectedImages),
     `${slug}: preserve all authored OG images or use its generated card`
@@ -437,7 +444,7 @@ for (const file of postFiles) {
     )
   }
 
-  if (expectedImages[0] === `${siteUrl}/og/${slug}.png`) {
+  if (expectedImages[0] === `${ogImageBaseUrl}/og/${slug}.png`) {
     generatedCards += 1
     const imagePath = join(dist, 'og', `${slug}.png`)
     const bytes = await readFile(imagePath).catch(() => Buffer.alloc(0))

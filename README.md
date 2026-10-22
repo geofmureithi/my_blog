@@ -24,7 +24,7 @@ Run `pnpm new-post` to create a draft post interactively. Shared site and social
 
 ## SEO and feeds
 
-Each page gets a canonical URL, Open Graph and X card metadata. Posts also include Article JSON-LD; the author record supplies the Person data. A post image from its frontmatter is used for social previews. Posts without one get a prerendered card at `/og/<slug>.png`.
+Each page gets a canonical URL, Open Graph and X card metadata. Posts also include Article JSON-LD; the author record supplies the Person data. A post image from its frontmatter is used for social previews. Posts without one get a prerendered card at `/og/<slug>.png`. Set `OG_IMAGE_BASE_URL` when building a preview so its generated cards resolve on that host; canonical URLs stay on the production site.
 
 The build generates `/robots.txt`, `/sitemap.xml`, `/feed.xml`, and a feed for each tag at `/tags/<tag>/feed.xml`. Legacy `/posts/<slug>` URLs redirect to `/blog/<slug>`.
 

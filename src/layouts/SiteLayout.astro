@@ -8,6 +8,7 @@ import siteMetadata from '../data/site-metadata'
 interface Props {
   title?: string
   description?: string
+  robots?: string
   canonical?: string
   ogType?: string
   ogImage?: string
@@ -27,6 +28,7 @@ const canonicalPath = Astro.url.pathname.replace(/\/index(?:\.html)?$/, '/').rep
 const {
   title = siteMetadata.title,
   description = siteMetadata.description,
+  robots = 'index, follow, max-image-preview:large',
   canonical = siteMetadata.siteUrl + canonicalPath,
   ogType = 'website',
   ogImage,
@@ -42,7 +44,9 @@ const {
   tagFeedTitle,
 } = Astro.props as Props
 const imageSources = ogImages ?? [ogImage ?? siteMetadata.socialBanner]
-const absoluteOgImages = imageSources.map((image) => new URL(image, siteMetadata.siteUrl).href)
+const absoluteOgImages = imageSources.map(
+  (image) => new URL(image, siteMetadata.ogImageBaseUrl).href
+)
 const defaultImageMetadata = [{ width: 1200, height: 600, type: 'image/png' }]
 const imageMetadata =
   ogImageMetadata ??
@@ -62,7 +66,7 @@ const navLinks = [
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="robots" content={robots} />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#000000" />
     <title>{title}</title>

@@ -6,6 +6,7 @@ const siteMetadata = {
   language: 'en-us',
   theme: 'system',
   siteUrl: 'https://mureithi.me',
+  ogImageBaseUrl: process.env.OG_IMAGE_BASE_URL || 'https://mureithi.me',
   siteRepo: 'https://github.com/geofmureithi/my_blog',
   siteLogo: '/static/images/avatar.jpeg',
   socialBanner: '/static/images/twitter-card.png',
