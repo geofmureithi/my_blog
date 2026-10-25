@@ -1,0 +1,24 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Code with Mureithi</title>
+      <link>https://mureithi.me/blog</link>
+      <description>Conversations on code I write. Mainly Rust, Javascript</description>
+      <language>en-us</language>
+      <managingEditor>mureithinjuguna@gmail.com (Njuguna Mureithi)</managingEditor>
+      <webMaster>mureithinjuguna@gmail.com (Njuguna Mureithi)</webMaster>
+      <lastBuildDate>Wed, 12 Aug 2015 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mureithi.me/tags/css3/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mureithi.me/blog/tabs-with-no-javascript</guid>
+    <title>Creating a simple beautiful tab design with no JavaScript</title>
+    <link>https://mureithi.me/blog/tabs-with-no-javascript</link>
+    <description>Lets create Css3 based tabs without Javascript. These tabs will include an icon and are responsive.</description>
+    <pubDate>Wed, 12 Aug 2015 00:00:00 GMT</pubDate>
+    <author>mureithinjuguna@gmail.com (Njuguna Mureithi)</author>
+    <category>css3</category><category>javascript</category><category>ui</category>
+  </item>
+
+    </channel>
+  </rss>

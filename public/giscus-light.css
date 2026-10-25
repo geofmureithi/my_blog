@@ -1,0 +1,92 @@
+@import url('https://giscus.app/themes/light.css');
+
+.gsc-reactions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.gsc-reactions-count {
+  width: auto;
+  margin: 0;
+  text-align: right;
+}
+
+.gsc-reactions > .flex {
+  flex: 0 1 auto;
+  width: auto;
+  margin-top: 0 !important;
+  justify-content: flex-end !important;
+}
+
+.gsc-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.gsc-left-header {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.gsc-right-header {
+  margin-left: auto;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  gap: 8px;
+  padding: 0 !important;
+}
+
+.gsc-right-header .BtnGroup-item {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.gsc-right-header .btn {
+  background: transparent !important;
+  border: 1px solid var(--color-border-default, #d0d7de) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  padding: 6px 14px !important;
+  line-height: 1.25;
+}
+
+.gsc-right-header .BtnGroup-item--selected .btn {
+  background: transparent !important;
+  font-weight: 600;
+}
+
+.gsc-comment,
+.gsc-comment pre,
+.gsc-comment img,
+.gsc-comment .markdown-body {
+  max-width: 100%;
+}
+
+.gsc-comment pre {
+  overflow-x: auto;
+}
+
+@media (max-width: 520px) {
+  .gsc-right-header {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .gsc-right-header .BtnGroup-item {
+    flex: 1 1 0;
+  }
+
+  .gsc-right-header .btn {
+    width: 100%;
+  }
+}

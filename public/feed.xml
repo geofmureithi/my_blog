@@ -1,0 +1,64 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Code with Mureithi</title>
+      <link>https://mureithi.me/blog</link>
+      <description>Conversations on code I write. Mainly Rust, Javascript</description>
+      <language>en-us</language>
+      <managingEditor>mureithinjuguna@gmail.com (Njuguna Mureithi)</managingEditor>
+      <webMaster>mureithinjuguna@gmail.com (Njuguna Mureithi)</webMaster>
+      <lastBuildDate>Tue, 22 Mar 2022 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mureithi.me/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mureithi.me/blog/background-job-processing-with-rust-actix-redis</guid>
+    <title>Background job processing with rust using actix and redis</title>
+    <link>https://mureithi.me/blog/background-job-processing-with-rust-actix-redis</link>
+    <description>Lets learn how to process background jobs by writing a service that sends emails without blocking.</description>
+    <pubDate>Tue, 22 Mar 2022 00:00:00 GMT</pubDate>
+    <author>mureithinjuguna@gmail.com (Njuguna Mureithi)</author>
+    <category>rust</category><category>actix</category><category>redis</category><category>apalis</category>
+  </item>
+
+  <item>
+    <guid>https://mureithi.me/blog/simple-authentication-approach-with-actix-web</guid>
+    <title>Simple authentication with actix-web</title>
+    <link>https://mureithi.me/blog/simple-authentication-approach-with-actix-web</link>
+    <description>Learn how to painlesly apply authentication to your actix-web project</description>
+    <pubDate>Sun, 04 Apr 2021 00:00:00 GMT</pubDate>
+    <author>mureithinjuguna@gmail.com (Njuguna Mureithi)</author>
+    <category>actix</category><category>rust</category><category>authentication</category>
+  </item>
+
+  <item>
+    <guid>https://mureithi.me/blog/tabs-with-no-javascript</guid>
+    <title>Creating a simple beautiful tab design with no JavaScript</title>
+    <link>https://mureithi.me/blog/tabs-with-no-javascript</link>
+    <description>Lets create Css3 based tabs without Javascript. These tabs will include an icon and are responsive.</description>
+    <pubDate>Wed, 12 Aug 2015 00:00:00 GMT</pubDate>
+    <author>mureithinjuguna@gmail.com (Njuguna Mureithi)</author>
+    <category>css3</category><category>javascript</category><category>ui</category>
+  </item>
+
+  <item>
+    <guid>https://mureithi.me/blog/the-perfect-tribonacci-sequence</guid>
+    <title>Python: Writing the perfect Tribonacci sequence</title>
+    <link>https://mureithi.me/blog/the-perfect-tribonacci-sequence</link>
+    <description>Tribonacci calculations without a maximum recussion error</description>
+    <pubDate>Mon, 11 Dec 2017 00:00:00 GMT</pubDate>
+    <author>mureithinjuguna@gmail.com (Njuguna Mureithi)</author>
+    <category>python</category><category>memoize</category>
+  </item>
+
+  <item>
+    <guid>https://mureithi.me/blog/the-python-fudge-it-approach</guid>
+    <title>Python: The F#%K It Approach</title>
+    <link>https://mureithi.me/blog/the-python-fudge-it-approach</link>
+    <description>But what do you do in those times where it proves difficult to approach things rationally in the now and then?</description>
+    <pubDate>Sun, 31 Jan 2021 00:00:00 GMT</pubDate>
+    <author>mureithinjuguna@gmail.com (Njuguna Mureithi)</author>
+    <category>python</category><category>errors</category>
+  </item>
+
+    </channel>
+  </rss>
