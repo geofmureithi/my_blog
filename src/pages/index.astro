@@ -7,9 +7,8 @@ import projects from '../data/projects'
 import { tagSlug } from '../lib/tags'
 import RustIcon from '../components/icons/Rust.astro'
 import JavaScriptIcon from '../components/icons/JavaScript.astro'
-import CIcon from '../components/icons/C.astro'
-import NodeIcon from '../components/icons/Node.astro'
-import PostgresIcon from '../components/icons/Postgres.astro'
+import PythonIcon from '../components/icons/Python.astro'
+import RedisIcon from '../components/icons/Redis.astro'
 import ReadMoreIcon from '../components/icons/ReadMore.astro'
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).toSorted(
@@ -23,11 +22,10 @@ const formatDate = (date: Date) =>
     timeZone: 'UTC',
   }).format(date)
 const skills = [
-  { name: 'Rust', Icon: RustIcon },
-  { name: 'JavaScript', Icon: JavaScriptIcon },
-  { name: 'C', Icon: CIcon },
-  { name: 'Node', Icon: NodeIcon },
-  { name: 'Postgres', Icon: PostgresIcon },
+  { name: 'Rust', Icon: RustIcon, tag: 'rust' },
+  { name: 'JavaScript', Icon: JavaScriptIcon, tag: 'javascript' },
+  { name: 'Python', Icon: PythonIcon, tag: 'python' },
+  { name: 'Redis', Icon: RedisIcon, tag: 'redis' },
 ]
 ---
 
@@ -42,14 +40,15 @@ const skills = [
           I build software for payments, automation, and the web.
         </p>
         <ul class="mt-8 flex flex-wrap gap-2 text-gray-900 dark:text-gray-100">
-          {skills.map(({ name, Icon }) => (
+          {skills.map(({ name, Icon, tag }) => (
             <li>
-              <span
-                aria-label={name}
-                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600"
+              <a
+                href={`/tags/${tag}`}
+                aria-label={`${name} posts`}
+                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 transition hover:border-primary-500 dark:border-gray-600 dark:hover:border-primary-400"
               >
                 <Icon class="h-4 w-4" aria-hidden="true" />
-              </span>
+              </a>
             </li>
           ))}
         </ul>
