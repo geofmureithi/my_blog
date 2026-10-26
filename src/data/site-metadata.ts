@@ -15,6 +15,7 @@ const siteMetadata = {
   twitter: 'https://twitter.com/tweetofnjuguna',
   twitterHandle: '@tweetofnjuguna',
   linkedin: 'https://www.linkedin.com/in/njuguna-m-152b4ba4/',
+  sessionize: 'https://sessionize.com/njuguna-mureithi/',
   locale: 'en-US',
 }
 
