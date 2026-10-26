@@ -1,0 +1,233 @@
+---
+import { getCollection, getEntry, render } from 'astro:content'
+import TOCInline from '../../components/TOCInline.astro'
+import GiscusComments from '../../components/GiscusComments.astro'
+import SiteLayout from '../../layouts/SiteLayout.astro'
+import siteMetadata from '../../data/site-metadata'
+import { personEntity } from '../../lib/structured-data'
+import { tagSlug } from '../../lib/tags'
+import sharp from 'sharp'
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
+
+export async function getStaticPaths() {
+  const entries = await getCollection('blog')
+  return entries
+    .filter((entry) => !entry.data.draft)
+    .map((entry) => ({ params: { slug: entry.id }, props: { entry } }))
+}
+
+const { entry } = Astro.props
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft)).toSorted(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+)
+const previousPost = allPosts[allPosts.findIndex((post) => post.id === entry.id) + 1]
+const { Content, headings } = await render(entry)
+const toc = headings.map(({ depth, slug, text }) => ({ depth, value: text, url: `#${slug}` }))
+const authorIds = entry.data.authors.length ? entry.data.authors : ['default']
+const authorEntries = (await Promise.all(authorIds.map((id) => getEntry('authors', id)))).filter(
+  (authorEntry) => authorEntry !== undefined
+)
+const author = authorEntries[0] ?? (await getEntry('authors', 'default'))
+const schemaAuthors = authorEntries.length
+  ? authorEntries.map((authorEntry) => personEntity(authorEntry.data, authorEntry.id))
+  : author
+    ? [personEntity(author.data)]
+    : [{ '@type': 'Person', name: siteMetadata.author }]
+const published = entry.data.date.toISOString()
+const modified = entry.data.lastmod?.toISOString()
+const pageUrl = siteMetadata.siteUrl + '/blog/' + entry.id
+const canonicalUrl = entry.data.canonicalUrl || pageUrl
+const images = entry.data.images.length ? entry.data.images : [`/og/${entry.id}.png`]
+const siteOrigin = new URL(siteMetadata.siteUrl).origin
+const imageUrls = images.map((image) => new URL(image, siteMetadata.ogImageBaseUrl).href)
+const imageMetadata = await Promise.all(
+  images.map(async (image) => {
+    const url = new URL(image, siteMetadata.ogImageBaseUrl)
+    const ogImageOrigin = new URL(siteMetadata.ogImageBaseUrl).origin
+    if (url.origin !== siteOrigin && url.origin !== ogImageOrigin) return {}
+    if (url.pathname.startsWith('/og/')) return { width: 1200, height: 600, type: 'image/png' }
+    const filePath = join(
+      process.cwd(),
+      'public',
+      decodeURIComponent(url.pathname).replace(/^\/+/, '')
+    )
+    const metadata = await sharp(await readFile(filePath)).metadata()
+    return {
+      width: metadata.width,
+      height: metadata.height,
+      type:
+        metadata.format === 'svg'
+          ? 'image/svg+xml'
+          : metadata.format
+            ? `image/${metadata.format}`
+            : undefined,
+    }
+  })
+)
+const articleData = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+  headline: entry.data.title,
+  image: imageUrls.map((url, index) => ({ '@type': 'ImageObject', url, ...imageMetadata[index] })),
+  datePublished: published,
+  ...(modified && { dateModified: modified }),
+  author: schemaAuthors,
+  publisher: {
+    '@type': 'Organization',
+    name: siteMetadata.author,
+    logo: { '@type': 'ImageObject', url: siteMetadata.siteUrl + siteMetadata.siteLogo },
+  },
+  description: entry.data.summary || siteMetadata.description,
+}
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat(siteMetadata.locale, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }).format(date)
+---
+
+<SiteLayout
+  title={entry.data.title}
+  description={entry.data.summary || siteMetadata.description}
+  canonical={canonicalUrl}
+  ogType="article"
+  ogImages={images}
+  ogImageAlt={entry.data.title}
+  ogImageMetadata={imageMetadata}
+  articlePublished={published}
+  articleModified={modified}
+  articleSection={entry.data.tags[0]}
+  articleTags={entry.data.tags}
+  structuredData={articleData}
+>
+  <div class="mx-auto max-w-3xl px-4 sm:px-6 xl:max-w-5xl xl:px-0">
+    <article>
+      <div class="xl:divide-y xl:divide-gray-200 xl:dark:divide-gray-700">
+        <header class="pt-6 xl:pb-6">
+          <div class="space-y-1 text-center">
+            <dl class="space-y-10">
+              <div>
+                <dt class="sr-only">Published on</dt>
+                <dd class="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                  <time datetime={entry.data.date.toISOString()}>
+                    {formatDate(entry.data.date)}
+                  </time>
+                </dd>
+              </div>
+            </dl>
+            <h1 class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-5xl md:leading-14">
+              {entry.data.title}
+            </h1>
+          </div>
+        </header>
+        <div
+          class="divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:grid xl:grid-cols-4 xl:gap-x-6 xl:divide-y-0"
+          style="grid-template-rows: auto 1fr"
+        >
+          <dl class="pt-6 pb-10 xl:border-b xl:border-gray-200 xl:pt-11 xl:dark:border-gray-700">
+            <dt class="sr-only">Authors</dt>
+            <dd>
+              <ul class="flex justify-center space-x-8 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
+                <li class="flex items-center space-x-2">
+                  {author?.data.avatar && (
+                    <img
+                      src={author.data.avatar}
+                      width="38"
+                      height="38"
+                      alt="avatar"
+                      class="h-10 w-10 rounded-full"
+                    />
+                  )}
+                  <dl class="whitespace-nowrap text-sm font-medium leading-5">
+                    <dt class="sr-only">Name</dt>
+                    <dd class="text-gray-900 dark:text-gray-100">{author?.data.name}</dd>
+                    <dt class="sr-only">Twitter</dt>
+                    <dd>
+                      {author?.data.twitter && (
+                        <a
+                          href={author.data.twitter}
+                          class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                        >
+                          {author.data.twitter.replace('https://twitter.com/', '@')}
+                        </a>
+                      )}
+                    </dd>
+                  </dl>
+                </li>
+              </ul>
+            </dd>
+          </dl>
+          <div class="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
+            <div class="prose max-w-none pt-10 pb-8 dark:prose-dark">
+              <Content toc={toc} components={{ TOCInline }} />
+            </div>
+            <div class="pt-6 pb-6 text-sm text-gray-700 dark:text-gray-300">
+              <a
+                href={'https://mobile.twitter.com/search?q=' + encodeURIComponent(pageUrl)}
+                rel="nofollow"
+              >
+                Discuss on Twitter
+              </a>
+              {' • '}
+              <a href={siteMetadata.siteRepo + '/blob/main/src/content/blog/' + entry.id + '.mdx'}>
+                View on GitHub
+              </a>
+            </div>
+            <GiscusComments
+              slug={entry.id}
+              description={entry.data.summary || ''}
+              pageUrl={pageUrl}
+            />
+          </div>
+          <footer>
+            <div class="divide-gray-200 text-sm font-medium leading-5 dark:divide-gray-700 xl:col-start-1 xl:row-start-2 xl:divide-y">
+              {entry.data.tags.length > 0 && (
+                <div class="py-4 xl:py-8">
+                  <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                    Tags
+                  </h2>
+                  <div class="flex flex-wrap">
+                    {entry.data.tags.map((tag) => (
+                      <a
+                        href={'/tags/' + tagSlug(tag)}
+                        class="mr-3 text-sm font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                      >
+                        {tag}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div class="pt-4 xl:pt-8">
+              {previousPost && (
+                <div class="pt-6 pb-4">
+                  <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                    Previous Article
+                  </h2>
+                  <a
+                    href={`/blog/${previousPost.id}`}
+                    class="mt-2 inline-block text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                  >
+                    {previousPost.data.title}
+                  </a>
+                </div>
+              )}
+              <a
+                href="/blog"
+                class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+              >
+                &larr; Back to the blog
+              </a>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </article>
+  </div>
+</SiteLayout>

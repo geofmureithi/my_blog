@@ -1,21 +1,11 @@
 // @ts-check
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const defaultTheme = require('tailwindcss/defaultTheme')
-const colors = require('tailwindcss/colors')
+const colors = require('./tailwind-colors.cjs')
 
-/** @type {import("tailwindcss/tailwind-config").TailwindConfig } */
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  experimental: {
-    optimizeUniversalDefaults: true,
-  },
-  content: [
-    './pages/**/*.tsx',
-    './components/**/*.tsx',
-    './layouts/**/*.tsx',
-    './lib/**/*.ts',
-    './data/**/*.mdx',
-  ],
+  content: ['./src/**/*.{astro,js,jsx,ts,tsx,md,mdx}'],
   darkMode: 'class',
   theme: {
     extend: {
@@ -29,12 +19,32 @@ module.exports = {
         14: '3.5rem',
       },
       fontFamily: {
-        //@ts-ignore
-        sans: ['InterVariable', ...defaultTheme.fontFamily.sans],
+        sans: [
+          'InterVariable',
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          '"system-ui"',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          '"Noto Sans"',
+          'sans-serif',
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+          '"Segoe UI Symbol"',
+          '"Noto Color Emoji"',
+        ],
       },
       colors: {
         primary: colors.teal,
         gray: colors.neutral,
+        neutral: colors.neutral,
+        green: colors.green,
+        red: colors.red,
+        lime: colors.lime,
+        pink: colors.pink,
       },
       typography: (theme) => ({
         DEFAULT: {

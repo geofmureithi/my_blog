@@ -1,0 +1,14 @@
+---
+import { getCollection } from 'astro:content'
+import BlogPostList from '../../components/BlogPostList.astro'
+import SiteLayout from '../../layouts/SiteLayout.astro'
+import siteMetadata from '../../data/site-metadata'
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).toSorted(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+)
+---
+
+<SiteLayout title={`Blog - ${siteMetadata.author}`} description={siteMetadata.description}>
+  <BlogPostList posts={posts} title="All Posts" />
+</SiteLayout>
