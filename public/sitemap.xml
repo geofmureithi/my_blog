@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://mureithi.me/tags/actix</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/tags/css3</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/tags/apalis</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/tags/errors</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/tags/authentication</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/tags/javascript</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/tags/memoize</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/tags/python</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/tags/redis</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/tags/rust</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/tags/ui</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/blog/background-job-processing-with-rust-actix-redis</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/blog/simple-authentication-approach-with-actix-web</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/blog/tabs-with-no-javascript</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/blog/the-perfect-tribonacci-sequence</loc>
+  </url>
+
+  <url>
+    <loc>https://mureithi.me/blog/the-python-fudge-it-approach</loc>
+  </url>
+</urlset>

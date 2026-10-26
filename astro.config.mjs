@@ -25,6 +25,11 @@ export default defineConfig({
   integrations: [mdx()],
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    },
   },
   markdown: {
     syntaxHighlight: false,

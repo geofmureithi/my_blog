@@ -10,5 +10,5 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).toSorted(
 ---
 
 <SiteLayout title={`Blog - ${siteMetadata.author}`} description={siteMetadata.description}>
-  <BlogPostList posts={posts} title="All Posts" />
+  <BlogPostList posts={posts} title="Blog" />
 </SiteLayout>

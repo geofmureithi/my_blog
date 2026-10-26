@@ -7,3 +7,5 @@ dist/
 .vercel/
 .DS_Store
 *.log
+.contentlayer/
+.claude/

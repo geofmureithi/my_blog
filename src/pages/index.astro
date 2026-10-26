@@ -1,8 +1,15 @@
 ---
 import { getCollection } from 'astro:content'
 import SiteLayout from '../layouts/SiteLayout.astro'
+import ProjectCard from '../components/ProjectCard.astro'
 import siteMetadata from '../data/site-metadata'
+import projects from '../data/projects'
 import { tagSlug } from '../lib/tags'
+import RustIcon from '../components/icons/Rust.astro'
+import JavaScriptIcon from '../components/icons/JavaScript.astro'
+import PythonIcon from '../components/icons/Python.astro'
+import RedisIcon from '../components/icons/Redis.astro'
+import ReadMoreIcon from '../components/icons/ReadMore.astro'
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).toSorted(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
@@ -14,100 +21,132 @@ const formatDate = (date: Date) =>
     day: 'numeric',
     timeZone: 'UTC',
   }).format(date)
+const skills = [
+  { name: 'Rust', Icon: RustIcon, tag: 'rust' },
+  { name: 'JavaScript', Icon: JavaScriptIcon, tag: 'javascript' },
+  { name: 'Python', Icon: PythonIcon, tag: 'python' },
+  { name: 'Redis', Icon: RedisIcon, tag: 'redis' },
+]
 ---
 
 <SiteLayout>
-  <div class="mt-8 divide-y divide-gray-200 dark:divide-gray-700 md:mt-16">
-    <div class="my-4 space-y-2 pt-6 pb-8 md:space-y-5 xl:grid xl:grid-cols-3">
-      <div class="pr-8 xl:col-span-2">
-        <p class="mb-4 bg-clip-text text-4xl font-extrabold leading-[60px] tracking-tight text-transparent bg-gradient-to-r from-green-600 to-red-600 dark:bg-gradient-to-l dark:from-gray-500 dark:to-lime-600 md:text-6xl md:leading-[86px]">
-          Habari!
+  <section>
+    <div class="grid items-start gap-8 pt-8 md:grid-cols-[minmax(0,1.15fr)_minmax(16rem,0.85fr)] md:gap-12 md:pt-14">
+      <div>
+        <h1 class="max-w-2xl text-2xl font-semibold leading-snug tracking-tight text-gray-900 sm:text-4xl sm:leading-tight dark:text-gray-100">
+          I'm Njuguna Mureithi.
+        </h1>
+        <p class="mt-2 max-w-2xl text-2xl leading-snug tracking-tight text-gray-600 sm:text-4xl sm:leading-tight dark:text-gray-300">
+          I build software for payments, automation, and the web.
         </p>
-        <div class="text-lg leading-8 text-gray-600 dark:text-gray-400">
-          <h1 class="text-neutral-900 dark:text-neutral-200">
-            I'm Njuguna Mureithi, a Senior Engineer from Nairobi, Kenya.
-          </h1>
-          <p class="mt-4 mb-8">
-            I started my coding journey in 2007 and sold my first software in 2010
-            <br />
-            I write code every possible day and have done so gaining 10+ years of real work
-            experience.
-            <br />
-            I enjoy learning new concepts and languages.
-            <br />
-            I'm currently involved a lot with Rust and Javascript with a little bit of C.
-          </p>
-          <p class="my-8">Karibu!</p>
-        </div>
+        <ul class="mt-8 flex flex-wrap gap-2 text-gray-900 dark:text-gray-100">
+          {skills.map(({ name, Icon, tag }) => (
+            <li>
+              <a
+                href={`/tags/${tag}`}
+                aria-label={`${name} posts`}
+                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 transition hover:border-primary-500 dark:border-gray-600 dark:hover:border-primary-400"
+              >
+                <Icon class="h-4 w-4" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
-      <div class="hidden xl:block">
-        <img
-          src="/static/images/who-am-i.webp"
-          alt="hero"
-          width="1280"
-          height="960"
-          class="rounded object-cover object-center"
-        />
+      <p class="max-w-md text-base leading-7 text-gray-600 md:justify-self-end md:pt-24 md:text-right dark:text-gray-400">
+        I started writing code in 2007 and sold my first program in 2010. These days the work is
+        mostly Rust and JavaScript, with a little C when the hardware asks for it. Karibu.
+      </p>
+    </div>
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a
+        href="/projects"
+        class="inline-flex items-center rounded-lg bg-primary-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-600"
+      >
+        Selected work
+      </a>
+      <a
+        href="/about"
+        class="inline-flex items-center rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-800 hover:border-primary-500 dark:border-gray-600 dark:text-gray-100"
+      >
+        About
+      </a>
+    </div>
+  </section>
+
+  <section class="mt-16">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h2 class="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl dark:text-gray-100">
+          Selected work
+        </h2>
+        <p class="mt-2 text-gray-500 dark:text-gray-400">Libraries and APIs I maintain.</p>
       </div>
+      <a
+        href="/projects"
+        class="text-sm font-medium text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+      >
+        View all projects
+      </a>
     </div>
-  </div>
-  <div class="divide-y divide-gray-200 dark:divide-gray-700">
-    <div class="space-y-2 pt-6 pb-8 md:space-y-5">
-      <h1 class="text-2xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-4xl md:leading-14">
-        Latest Posts
-      </h1>
-      <p class="text-lg leading-7 text-gray-500 dark:text-gray-400">{siteMetadata.description}</p>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {projects.map((project) => (
+        <ProjectCard {...project} />
+      ))}
     </div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-      {posts.slice(0, 5).map((post) => (
-        <li class="py-12">
-          <article>
-            <div class="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
-              <dl>
-                <dt class="sr-only">Published on</dt>
-                <dd class="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                  <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-                </dd>
-              </dl>
-              <div class="space-y-5 xl:col-span-3">
-                <div class="space-y-6">
-                  <div>
-                    <h2 class="text-2xl font-bold leading-8 tracking-tight">
-                      <a class="text-gray-900 dark:text-gray-100" href={`/blog/${post.id}`}>
-                        {post.data.title}
-                      </a>
-                    </h2>
-                    <div class="flex flex-wrap">
-                      {post.data.tags.map((tag) => (
-                        <a
-                          href={`/tags/${tagSlug(tag)}`}
-                          class="mr-3 text-sm font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                        >
-                          {tag}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                  {post.data.summary && (
-                    <div class="prose max-w-none text-gray-500 dark:text-gray-400">
-                      {post.data.summary}
-                    </div>
-                  )}
-                </div>
-                <div class="text-base font-medium leading-6">
-                  <a
-                    href={`/blog/${post.id}`}
-                    aria-label={`Read "${post.data.title}"`}
-                    class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                  >
-                    Read more →
-                  </a>
-                </div>
-              </div>
+  </section>
+
+  <section class="mt-16">
+    <div>
+      <h2 class="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl dark:text-gray-100">
+        Latest writing
+      </h2>
+      <p class="mt-2 text-gray-500 dark:text-gray-400">{siteMetadata.description}</p>
+    </div>
+    <ul class="mt-6 grid gap-4 md:grid-cols-2">
+      {posts.slice(0, 4).map((post) => (
+        <li>
+          <article class="flex h-full flex-col rounded-2xl border border-gray-200 p-6 dark:border-gray-800">
+            <time
+              datetime={post.data.date.toISOString()}
+              class="text-sm text-gray-500 dark:text-gray-400"
+            >
+              {formatDate(post.data.date)}
+            </time>
+            <h3
+              class="mt-3 text-xl font-bold leading-7 tracking-tight text-gray-900 dark:text-gray-100"
+              transition:name={`post-${post.id}`}
+            >
+              <a href={`/blog/${post.id}`} class="hover:text-primary-500">
+                {post.data.title}
+              </a>
+            </h3>
+            <div class="mt-3 flex flex-wrap gap-x-3 gap-y-1">
+              {post.data.tags.map((tag) => (
+                <a
+                  href={`/tags/${tagSlug(tag)}`}
+                  class="text-xs font-medium uppercase tracking-wide text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                >
+                  {tag}
+                </a>
+              ))}
             </div>
+            {post.data.summary && (
+              <p class="mt-3 flex-1 text-sm leading-6 text-gray-500 dark:text-gray-400">
+                {post.data.summary}
+              </p>
+            )}
+            <a
+              href={`/blog/${post.id}`}
+              aria-label={`Read ${post.data.title}`}
+              class="mt-6 inline-flex w-fit items-center rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-primary-500 hover:border-primary-500 dark:border-gray-600 dark:hover:border-primary-400"
+            >
+              Read more
+              <ReadMoreIcon class="ml-1 h-5 w-5" aria-hidden="true" />
+            </a>
           </article>
         </li>
       ))}
     </ul>
-  </div>
+  </section>
 </SiteLayout>

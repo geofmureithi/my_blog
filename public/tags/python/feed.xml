@@ -1,0 +1,34 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Code with Mureithi</title>
+      <link>https://mureithi.me/blog</link>
+      <description>Conversations on code I write. Mainly Rust, Javascript</description>
+      <language>en-us</language>
+      <managingEditor>mureithinjuguna@gmail.com (Njuguna Mureithi)</managingEditor>
+      <webMaster>mureithinjuguna@gmail.com (Njuguna Mureithi)</webMaster>
+      <lastBuildDate>Mon, 11 Dec 2017 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mureithi.me/tags/python/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mureithi.me/blog/the-perfect-tribonacci-sequence</guid>
+    <title>Python: Writing the perfect Tribonacci sequence</title>
+    <link>https://mureithi.me/blog/the-perfect-tribonacci-sequence</link>
+    <description>Tribonacci calculations without a maximum recussion error</description>
+    <pubDate>Mon, 11 Dec 2017 00:00:00 GMT</pubDate>
+    <author>mureithinjuguna@gmail.com (Njuguna Mureithi)</author>
+    <category>python</category><category>memoize</category>
+  </item>
+
+  <item>
+    <guid>https://mureithi.me/blog/the-python-fudge-it-approach</guid>
+    <title>Python: The F#%K It Approach</title>
+    <link>https://mureithi.me/blog/the-python-fudge-it-approach</link>
+    <description>But what do you do in those times where it proves difficult to approach things rationally in the now and then?</description>
+    <pubDate>Sun, 31 Jan 2021 00:00:00 GMT</pubDate>
+    <author>mureithinjuguna@gmail.com (Njuguna Mureithi)</author>
+    <category>python</category><category>errors</category>
+  </item>
+
+    </channel>
+  </rss>
