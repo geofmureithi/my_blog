@@ -14,54 +14,68 @@ import siteMetadata from '../data/site-metadata'
     <title>{`404 | ${siteMetadata.title}`}</title>
     <link rel="icon" href="/static/favicons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/static/favicons/favicon-32x32.png" />
+
     <script is:inline>
-      const savedTheme = localStorage.getItem('theme') || 'system'
-      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      document.documentElement.classList.toggle(
-        'dark',
-        savedTheme === 'dark' || (savedTheme === 'system' && systemDark)
-      )
+      try {
+        const savedTheme = localStorage.getItem('theme') || 'system'
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+        document.documentElement.classList.toggle(
+          'dark',
+          savedTheme === 'dark' || (savedTheme === 'system' && systemDark)
+        )
+      } catch {
+        document.documentElement.classList.toggle(
+          'dark',
+          window.matchMedia('(prefers-color-scheme: dark)').matches
+        )
+      }
     </script>
   </head>
-  <body class="flex h-dvh items-center justify-center overflow-hidden bg-white px-4 text-black antialiased dark:bg-gray-900 dark:text-white">
-    <main class="flex w-full max-w-lg flex-col items-center text-center">
-      <p class="text-8xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 md:text-9xl">
+
+  <body class="min-h-dvh bg-white px-4 py-8 text-black antialiased dark:bg-gray-900 dark:text-white sm:px-6 sm:py-12">
+    <main class="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-2xl flex-col items-center justify-center text-center sm:min-h-[calc(100dvh-6rem)]">
+      <p class="text-[clamp(5rem,18vw,9rem)] font-extrabold leading-none tracking-tight text-gray-900 dark:text-gray-100">
         404
       </p>
 
-      <h1 class="mt-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100 md:text-3xl">
+      <h1 class="mt-5 max-w-full text-balance text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:mt-6 sm:text-2xl md:text-3xl">
         This page moved out of scope.
       </h1>
-      <p class="mt-2 max-w-md text-sm leading-6 text-gray-500 dark:text-gray-400">
+
+      <p class="mt-3 max-w-md text-pretty text-sm leading-6 text-gray-500 dark:text-gray-400 sm:text-base sm:leading-7">
         The borrow checker couldn't save this one. It got dropped before you arrived.
       </p>
 
-      <div class="mt-5 w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-white text-left dark:border-gray-800 dark:bg-gray-950">
-        <div class="flex items-center gap-2 border-b border-gray-200 px-4 py-2 dark:border-white/10">
-          <span class="h-3 w-3 rounded-full bg-red-500"></span>
-          <span class="h-3 w-3 rounded-full bg-yellow-400"></span>
-          <span class="h-3 w-3 rounded-full bg-green-500"></span>
-          <span class="ml-2 font-mono text-xs text-gray-500 dark:text-gray-400">
+      <div class="mt-6 w-full max-w-xl overflow-hidden rounded-xl border border-gray-200 bg-white text-left dark:border-gray-800 dark:bg-gray-950 sm:mt-8 sm:rounded-2xl">
+        <div class="flex min-w-0 items-center gap-2 border-b border-gray-200 px-3 py-3 dark:border-white/10 sm:px-4">
+          <span class="h-2.5 w-2.5 shrink-0 rounded-full bg-red-500 sm:h-3 sm:w-3"></span>
+          <span class="h-2.5 w-2.5 shrink-0 rounded-full bg-yellow-400 sm:h-3 sm:w-3"></span>
+          <span class="h-2.5 w-2.5 shrink-0 rounded-full bg-green-500 sm:h-3 sm:w-3"></span>
+
+          <span class="ml-1 min-w-0 truncate font-mono text-[11px] text-gray-500 dark:text-gray-400 sm:ml-2 sm:text-xs">
             should_we_solve_it_in_rust.rs
           </span>
         </div>
-        <pre class="overflow-x-auto px-4 py-3 font-mono text-sm leading-6 text-gray-800 dark:text-gray-200"><code><span class="text-teal-600 dark:text-teal-400">fn</span> <span class="text-blue-600 dark:text-blue-300">find_page</span>(url: <span class="text-teal-600 dark:text-teal-400">&amp;</span><span class="text-orange-600 dark:text-orange-300">str</span>) -&gt; <span class="text-teal-700 dark:text-teal-300">Result</span>&lt;Page, NotFound&gt; &#123;
+
+        <pre class="max-w-full overflow-x-auto px-3 py-4 font-mono text-xs leading-6 text-gray-800 dark:text-gray-200 sm:px-5 sm:text-sm"><code><span class="text-teal-600 dark:text-teal-400">fn</span> <span class="text-blue-600 dark:text-blue-300">find_page</span>(url: <span class="text-teal-600 dark:text-teal-400">&amp;</span><span class="text-orange-600 dark:text-orange-300">str</span>) -&gt; <span class="text-teal-700 dark:text-teal-300">Result</span>&lt;Page, NotFound&gt; &#123;
     pages.<span class="text-blue-600 dark:text-blue-300">get</span>(url).<span class="text-blue-600 dark:text-blue-300">ok_or</span>(NotFound) <span class="text-gray-400 dark:text-gray-500">// 🦀 nope</span>
 &#125;
 <span class="text-gray-400 dark:text-gray-500">// panicked at '404: page not found'</span></code></pre>
       </div>
 
-      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+      <div class="mt-6 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-3 sm:mt-8">
         <button
           id="go-back"
           type="button"
-          class="inline-flex items-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-primary-500 hover:text-primary-500 dark:border-gray-600 dark:text-gray-200 dark:hover:border-primary-400 dark:hover:text-primary-400"
+          class="inline-flex min-h-11 items-center justify-center rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:border-primary-500 hover:text-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:border-gray-600 dark:text-gray-200 dark:hover:border-primary-400 dark:hover:text-primary-400 dark:focus-visible:ring-offset-gray-900"
         >
           Go back
         </button>
+
         <a
           href="/"
-          class="inline-flex items-center rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600"
+          class="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary-500 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
         >
           Take me home
         </a>
