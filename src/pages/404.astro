@@ -22,53 +22,85 @@ import siteMetadata from '../data/site-metadata'
         savedTheme === 'dark' || (savedTheme === 'system' && systemDark)
       )
     </script>
+    <style>
+      .crab-walk {
+        animation: crab-walk 16s linear infinite;
+      }
+      .crab-bob {
+        animation: crab-bob 0.6s ease-in-out infinite;
+      }
+      @keyframes crab-walk {
+        from {
+          transform: translateX(-160px);
+        }
+        to {
+          transform: translateX(calc(100vw + 40px));
+        }
+      }
+      @keyframes crab-bob {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .crab-walk {
+          animation: none;
+          transform: translateX(24px);
+        }
+        .crab-bob {
+          animation: none;
+        }
+      }
+    </style>
   </head>
-  <body class="flex h-dvh items-center justify-center overflow-hidden bg-white px-4 text-black antialiased dark:bg-gray-900 dark:text-white">
-    <main class="flex w-full max-w-lg flex-col items-center text-center">
-      <!-- 404 with the crab as the "0" -->
-      <div class="flex items-center justify-center gap-2 md:gap-3">
-        <span class="text-7xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 md:text-8xl">
-          4
-        </span>
-        <svg
-          class="h-20 w-auto md:h-28"
-          viewBox="12 24 176 108"
+  <body class="relative flex h-dvh items-center justify-center overflow-hidden bg-white px-4 text-black antialiased dark:bg-gray-900 dark:text-white">
+    <!-- crab crawling across the screen -->
+    <div class="crab-walk pointer-events-none fixed bottom-8 left-0 z-0">
+      <svg
+        class="crab-bob h-12 w-auto md:h-14"
+        viewBox="12 24 176 108"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <g stroke="#c73e00" stroke-width="5" stroke-linecap="round">
+          <path d="M58 96 L34 112" />
+          <path d="M60 104 L38 124" />
+          <path d="M142 96 L166 112" />
+          <path d="M140 104 L162 124" />
+        </g>
+        <g fill="#f74c00">
+          <path d="M40 70 q-18 -6 -24 10 q-4 14 10 16 q10 1 10 -8 q0 -6 -6 -6 q8 -6 10 -12z" />
+          <path d="M160 70 q18 -6 24 10 q4 14 -10 16 q-10 1 -10 -8 q0 -6 6 -6 q-8 -6 -10 -12z" />
+        </g>
+        <ellipse cx="100" cy="92" rx="52" ry="34" fill="#f74c00" />
+        <ellipse cx="100" cy="92" rx="52" ry="34" fill="#000" opacity="0.06" />
+        <g stroke="#f74c00" stroke-width="6" stroke-linecap="round">
+          <path d="M86 62 L84 44" />
+          <path d="M114 62 L116 44" />
+        </g>
+        <circle cx="84" cy="40" r="9" fill="#fff" />
+        <circle cx="116" cy="40" r="9" fill="#fff" />
+        <circle cx="80" cy="42" r="3.5" fill="#1a1a1a" />
+        <circle cx="120" cy="42" r="3.5" fill="#1a1a1a" />
+        <path
+          d="M90 102 q10 8 20 0"
+          stroke="#7a2600"
+          stroke-width="4"
+          stroke-linecap="round"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <g stroke="#c73e00" stroke-width="5" stroke-linecap="round">
-            <path d="M58 96 L34 112" />
-            <path d="M60 104 L38 124" />
-            <path d="M142 96 L166 112" />
-            <path d="M140 104 L162 124" />
-          </g>
-          <g fill="#f74c00">
-            <path d="M40 70 q-18 -6 -24 10 q-4 14 10 16 q10 1 10 -8 q0 -6 -6 -6 q8 -6 10 -12z" />
-            <path d="M160 70 q18 -6 24 10 q4 14 -10 16 q-10 1 -10 -8 q0 -6 6 -6 q-8 -6 -10 -12z" />
-          </g>
-          <ellipse cx="100" cy="92" rx="52" ry="34" fill="#f74c00" />
-          <ellipse cx="100" cy="92" rx="52" ry="34" fill="#000" opacity="0.06" />
-          <g stroke="#f74c00" stroke-width="6" stroke-linecap="round">
-            <path d="M86 62 L84 44" />
-            <path d="M114 62 L116 44" />
-          </g>
-          <circle cx="84" cy="40" r="9" fill="#fff" />
-          <circle cx="116" cy="40" r="9" fill="#fff" />
-          <circle cx="80" cy="42" r="3.5" fill="#1a1a1a" />
-          <circle cx="120" cy="42" r="3.5" fill="#1a1a1a" />
-          <path
-            d="M90 102 q10 8 20 0"
-            stroke="#7a2600"
-            stroke-width="4"
-            stroke-linecap="round"
-            fill="none"
-          />
-        </svg>
-        <span class="text-7xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 md:text-8xl">
-          4
-        </span>
-      </div>
+        />
+      </svg>
+    </div>
+
+    <main class="relative z-10 flex w-full max-w-lg flex-col items-center text-center">
+      <p class="text-8xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 md:text-9xl">
+        404
+      </p>
 
       <h1 class="mt-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100 md:text-3xl">
         This page moved out of scope.
@@ -77,17 +109,19 @@ import siteMetadata from '../data/site-metadata'
         The borrow checker couldn't save this one — it got dropped before you arrived.
       </p>
 
-      <div class="mt-5 w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-gray-950 text-left dark:border-gray-800">
-        <div class="flex items-center gap-2 border-b border-white/10 px-4 py-2">
+      <div class="mt-5 w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-white text-left dark:border-gray-800 dark:bg-gray-950">
+        <div class="flex items-center gap-2 border-b border-gray-200 px-4 py-2 dark:border-white/10">
           <span class="h-3 w-3 rounded-full bg-red-500"></span>
           <span class="h-3 w-3 rounded-full bg-yellow-400"></span>
           <span class="h-3 w-3 rounded-full bg-green-500"></span>
-          <span class="ml-2 font-mono text-xs text-gray-400">should_we_solve_it_in_rust.rs</span>
+          <span class="ml-2 font-mono text-xs text-gray-500 dark:text-gray-400">
+            should_we_solve_it_in_rust.rs
+          </span>
         </div>
-        <pre class="overflow-x-auto px-4 py-3 font-mono text-sm leading-6 text-gray-200"><code><span class="text-teal-400">fn</span> <span class="text-blue-300">find_page</span>(url: <span class="text-teal-400">&amp;</span><span class="text-orange-300">str</span>) -&gt; <span class="text-teal-300">Result</span>&lt;Page, NotFound&gt; &#123;
-    pages.<span class="text-blue-300">get</span>(url).<span class="text-blue-300">ok_or</span>(NotFound) <span class="text-gray-500">// 🦀 nope</span>
+        <pre class="overflow-x-auto px-4 py-3 font-mono text-sm leading-6 text-gray-800 dark:text-gray-200"><code><span class="text-teal-600 dark:text-teal-400">fn</span> <span class="text-blue-600 dark:text-blue-300">find_page</span>(url: <span class="text-teal-600 dark:text-teal-400">&amp;</span><span class="text-orange-600 dark:text-orange-300">str</span>) -&gt; <span class="text-teal-700 dark:text-teal-300">Result</span>&lt;Page, NotFound&gt; &#123;
+    pages.<span class="text-blue-600 dark:text-blue-300">get</span>(url).<span class="text-blue-600 dark:text-blue-300">ok_or</span>(NotFound) <span class="text-gray-400 dark:text-gray-500">// 🦀 nope</span>
 &#125;
-<span class="text-gray-500">// panicked at '404: page not found'</span></code></pre>
+<span class="text-gray-400 dark:text-gray-500">// panicked at '404: page not found'</span></code></pre>
       </div>
 
       <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -96,7 +130,7 @@ import siteMetadata from '../data/site-metadata'
           type="button"
           class="inline-flex items-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-primary-500 hover:text-primary-500 dark:border-gray-600 dark:text-gray-200 dark:hover:border-primary-400 dark:hover:text-primary-400"
         >
-          ← Go back
+          Go back
         </button>
         <a
           href="/"
