@@ -204,6 +204,11 @@ for (const path of pages) {
   const robotsMeta = metaContent(html, 'name', 'robots') || ''
 
   assert(Boolean(title), `${label}: title is required`)
+  if (label === '404.html') {
+    assert(/\bnoindex\b/i.test(robotsMeta), '404.html: page must not be indexed')
+    assert(/\bfollow\b/i.test(robotsMeta), '404.html: page must allow link following')
+    continue
+  }
   assert(Boolean(description), `${label}: meta description is required`)
   assert(Boolean(canonical), `${label}: canonical URL is required`)
   assert(ogUrl === canonical, `${label}: og:url must match canonical URL`)
@@ -244,15 +249,10 @@ for (const path of pages) {
     `${label}: every og:image must have alt text`
   )
   assert(Boolean(twitterAlt), `${label}: twitter:image:alt is required`)
-  if (label === '404.html') {
-    assert(/\bnoindex\b/i.test(robotsMeta), '404.html: page must not be indexed')
-    assert(/\bfollow\b/i.test(robotsMeta), '404.html: page must allow link following')
-  } else {
-    assert(
-      /\bindex\b/i.test(robotsMeta) && /\bfollow\b/i.test(robotsMeta),
-      `${label}: page must be indexable and allow link following`
-    )
-  }
+  assert(
+    /\bindex\b/i.test(robotsMeta) && /\bfollow\b/i.test(robotsMeta),
+    `${label}: page must be indexable and allow link following`
+  )
   assert(
     /max-image-preview:\s*large/i.test(robotsMeta),
     `${label}: robots meta must allow large image previews`
@@ -303,7 +303,7 @@ for (const path of pages) {
   for (const data of jsonLd) {
     if (data['@type'] === 'Article')
       articlesByLabel.set(label, { data, html, canonical, description, title, ogImages })
-    if (data['@type'] === 'Person' && label === 'about.html') aboutPerson = data
+    if (data['@type'] === 'Person' && label === 'about/index.html') aboutPerson = data
   }
 }
 
@@ -353,7 +353,7 @@ for (const file of postFiles) {
   )
   if (frontmatter.draft) continue
   expectedArticleCount += 1
-  const label = `blog/${slug}.html`
+  const label = `blog/${slug}/index.html`
   const article = articlesByLabel.get(label)
   assert(Boolean(article), `${slug}: published post must have Article JSON-LD`)
   if (!article) continue
