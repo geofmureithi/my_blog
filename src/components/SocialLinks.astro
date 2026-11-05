@@ -1,0 +1,32 @@
+---
+import EmailIcon from './icons/Email.astro'
+import GitHubIcon from './icons/GitHub.astro'
+import LinkedInIcon from './icons/LinkedIn.astro'
+import SessionizeIcon from './icons/Sessionize.astro'
+import XIcon from './icons/X.astro'
+
+const icons = {
+  email: EmailIcon,
+  github: GitHubIcon,
+  linkedin: LinkedInIcon,
+  x: XIcon,
+  sessionize: SessionizeIcon,
+}
+
+interface Props {
+  links: Array<{ href: string; label: string; icon: keyof typeof icons }>
+  linkClass: string
+  iconClass: string
+}
+
+const { links, linkClass, iconClass } = Astro.props
+---
+
+{links.map(({ href, label, icon }) => {
+  const Icon = icons[icon]
+  return (
+    <a href={href} aria-label={label} class={linkClass}>
+      <Icon class={iconClass} aria-hidden="true" />
+    </a>
+  )
+})}

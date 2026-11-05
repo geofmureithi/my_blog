@@ -48,35 +48,26 @@ const { slug, description, pageUrl } = Astro.props as Props
   </div>
 </section>
 
-<script is:inline>
-  const giscusTheme = () => (document.documentElement.classList.contains('dark') ? 'dark' : 'light')
+<script>
+  import { giscusThemeUrl, paintGiscusFrame, resolveTheme, themeSurface } from '../lib/theme'
 
-  const giscusThemeUrl = () => `${window.location.origin}/giscus-${giscusTheme()}.css`
-
-  const applyGiscusTheme = (frame, force) => {
-    if (!frame?.contentWindow) return
-    const theme = giscusTheme()
-    frame.style.colorScheme = theme
-    frame.style.background = theme === 'dark' ? '#0d1117' : '#fff'
-    if (!force && frame.dataset.theme === theme) return
-    frame.dataset.theme = theme
-    frame.contentWindow.postMessage(
-      { giscus: { setConfig: { theme: giscusThemeUrl() } } },
-      'https://giscus.app'
-    )
-  }
-
-  if (!window.__giscusThemeBound) {
-    window.__giscusThemeBound = true
-    new MutationObserver(() => {
-      applyGiscusTheme(document.querySelector('iframe.giscus-frame'))
-    }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+  const onGiscusMessage = (event: MessageEvent) => {
+    if (event.origin !== 'https://giscus.app') return
+    const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
+    if (!frame || event.source !== frame.contentWindow) return
+    const payload = event.data?.giscus
+    if (!payload) return
+    if (payload.resizeHeight) frame.style.height = `${payload.resizeHeight}px`
+    if (frame.dataset.themeSent !== 'true') {
+      frame.dataset.themeSent = 'true'
+      paintGiscusFrame(frame, resolveTheme(), true)
+    }
   }
 
   const bindComments = () => {
-    const comments = document.querySelector('[data-giscus]')
-    if (!comments || comments.dataset.bound) return
-    const prompt = comments.querySelector('[data-comments-prompt]')
+    const comments = document.querySelector<HTMLElement>('[data-giscus]')
+    if (!comments || comments.dataset.bound === 'true') return
+    const prompt = comments.querySelector<HTMLElement>('[data-comments-prompt]')
     const loadComments = comments.querySelector('button')
     const label = comments.querySelector('[data-comments-label]')
     if (!prompt || !loadComments || !label) return
@@ -89,11 +80,11 @@ const { slug, description, pageUrl } = Astro.props as Props
         loadComments.setAttribute('aria-busy', 'true')
         label.textContent = 'Loading comments…'
 
-        const theme = giscusTheme()
+        const theme = resolveTheme()
         const params = new URLSearchParams({
           origin: `${window.location.href.split('#')[0]}#comments-container`,
           session: '',
-          theme: giscusThemeUrl(),
+          theme: giscusThemeUrl(theme),
           reactionsEnabled: '1',
           emitMetadata: '0',
           inputPosition: 'bottom',
@@ -102,9 +93,9 @@ const { slug, description, pageUrl } = Astro.props as Props
           category: 'General',
           categoryId: 'DIC_kwDOHc3xns4CPegj',
           strict: '0',
-          description: comments.dataset.description,
-          backLink: comments.dataset.backLink,
-          term: comments.dataset.slug,
+          description: comments.dataset.description || '',
+          backLink: comments.dataset.backLink || '',
+          term: comments.dataset.slug || '',
         })
         const frame = document.createElement('iframe')
         frame.className = 'giscus-frame mt-4'
@@ -117,34 +108,21 @@ const { slug, description, pageUrl } = Astro.props as Props
         frame.style.display = 'block'
         frame.style.minHeight = '160px'
         frame.style.colorScheme = theme
-        frame.style.background = theme === 'dark' ? '#0d1117' : '#fff'
+        frame.style.background = themeSurface[theme]
         frame.hidden = true
         frame.src = `https://giscus.app/en/widget?${params}`
         comments.append(frame)
         frame.addEventListener('load', () => {
           prompt.replaceWith(frame)
           frame.hidden = false
-          applyGiscusTheme(frame)
-        })
-
-        let themeSent = false
-        window.addEventListener('message', (event) => {
-          if (event.origin !== 'https://giscus.app' || event.source !== frame.contentWindow) return
-          if (event.data?.giscus?.resizeHeight) {
-            frame.style.height = `${event.data.giscus.resizeHeight}px`
-          }
-          if (event.data?.giscus && !themeSent) {
-            themeSent = true
-            applyGiscusTheme(frame, true)
-          }
+          paintGiscusFrame(frame, theme)
         })
       },
       { once: true }
     )
   }
+
+  window.addEventListener('message', onGiscusMessage)
+  document.addEventListener('astro:page-load', bindComments)
   bindComments()
-  if (!window.__commentsBound) {
-    window.__commentsBound = true
-    document.addEventListener('astro:page-load', bindComments)
-  }
 </script>
