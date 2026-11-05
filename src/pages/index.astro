@@ -4,23 +4,18 @@ import SiteLayout from '../layouts/SiteLayout.astro'
 import ProjectCard from '../components/ProjectCard.astro'
 import siteMetadata from '../data/site-metadata'
 import projects from '../data/projects'
+import { formatDate } from '../lib/format-date'
 import { tagSlug } from '../lib/tags'
 import RustIcon from '../components/icons/Rust.astro'
 import JavaScriptIcon from '../components/icons/JavaScript.astro'
 import PythonIcon from '../components/icons/Python.astro'
 import RedisIcon from '../components/icons/Redis.astro'
 import ReadMoreIcon from '../components/icons/ReadMore.astro'
+import { pageTransition } from '../lib/page-transition'
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).toSorted(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 )
-const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat(siteMetadata.locale, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'UTC',
-  }).format(date)
 const skills = [
   { name: 'Rust', Icon: RustIcon, tag: 'rust' },
   { name: 'JavaScript', Icon: JavaScriptIcon, tag: 'javascript' },
@@ -116,6 +111,7 @@ const skills = [
             <h3
               class="mt-3 text-xl font-bold leading-7 tracking-tight text-gray-900 dark:text-gray-100"
               transition:name={`post-${post.id}`}
+              transition:animate={pageTransition}
             >
               <a href={`/blog/${post.id}`} class="hover:text-primary-500">
                 {post.data.title}

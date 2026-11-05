@@ -1,7 +1,8 @@
 ---
-import siteMetadata from '../data/site-metadata'
+import { formatDate } from '../lib/format-date'
 import { tagSlug } from '../lib/tags'
 import ReadMoreIcon from './icons/ReadMore.astro'
+import { pageTransition } from '../lib/page-transition'
 
 interface Props {
   posts: Array<{
@@ -19,18 +20,11 @@ interface Props {
 }
 
 const { posts, title, description, search = true } = Astro.props as Props
-const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat(siteMetadata.locale, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'UTC',
-  }).format(date)
 ---
 
 <div>
   <header class="pt-6">
-    <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl dark:text-gray-100">
+    <h1 class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">
       {title}
     </h1>
     {description && <p class="mt-2 text-gray-500 dark:text-gray-400">{description}</p>}
@@ -72,6 +66,7 @@ const formatDate = (date: Date) =>
             <h3
               class="min-w-0 text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100"
               transition:name={`post-${post.id}`}
+              transition:animate={pageTransition}
             >
               <a class="hover:text-primary-500" href={`/blog/${post.id}`}>
                 {post.data.title}
