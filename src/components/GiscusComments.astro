@@ -8,55 +8,143 @@ interface Props {
 const { slug, description, pageUrl } = Astro.props as Props
 ---
 
-<div
+<section
   id="comments-container"
+  class="mt-10 min-w-0"
+  aria-labelledby="comments-heading"
   data-giscus
   data-slug={`blog/${slug}`}
   data-description={description}
   data-back-link={pageUrl}
 >
-  <button type="button">Load Comments</button>
-</div>
+  <h2
+    id="comments-heading"
+    class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+  >
+    Comments
+  </h2>
+  <div data-comments-prompt class="mt-3">
+    <button
+      type="button"
+      class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-900 hover:border-primary-500 disabled:cursor-wait disabled:opacity-60 dark:border-gray-600 dark:text-gray-100 dark:hover:border-primary-400"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        class="mr-2 h-4 w-4"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
+        ></path>
+      </svg>
+      <span data-comments-label>Load comments</span>
+    </button>
+  </div>
+</section>
 
 <script is:inline>
-  const comments = document.querySelector('[data-giscus]')
-  const loadComments = comments.querySelector('button')
+  const giscusTheme = () => (document.documentElement.classList.contains('dark') ? 'dark' : 'light')
 
-  loadComments.addEventListener(
-    'click',
-    () => {
-      const params = new URLSearchParams({
-        origin: `${window.location.href.split('#')[0]}#comments-container`,
-        session: '',
-        theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-        reactionsEnabled: '1',
-        emitMetadata: '0',
-        inputPosition: 'undefined',
-        repo: 'geofmureithi/my_blog',
-        repoId: 'R_kgDOHc3xng',
-        category: 'General',
-        categoryId: 'DIC_kwDOHc3xns4CPegj',
-        strict: '0',
-        description: comments.dataset.description,
-        backLink: comments.dataset.backLink,
-        term: comments.dataset.slug,
-      })
-      const frame = document.createElement('iframe')
-      frame.className = 'giscus-frame'
-      frame.title = 'Comments'
-      frame.scrolling = 'no'
-      frame.allow = 'clipboard-write'
-      frame.style.width = '100%'
-      frame.src = `https://giscus.app/en/widget?${params}`
-      comments.replaceChildren(frame)
+  const giscusThemeUrl = () => `${window.location.origin}/giscus-${giscusTheme()}.css`
 
-      window.addEventListener('message', (event) => {
-        if (event.origin !== 'https://giscus.app' || event.source !== frame.contentWindow) return
-        if (event.data?.giscus?.resizeHeight) {
-          frame.style.height = `${event.data.giscus.resizeHeight}px`
-        }
-      })
-    },
-    { once: true }
-  )
+  const applyGiscusTheme = (frame, force) => {
+    if (!frame?.contentWindow) return
+    const theme = giscusTheme()
+    frame.style.colorScheme = theme
+    frame.style.background = theme === 'dark' ? '#0d1117' : '#fff'
+    if (!force && frame.dataset.theme === theme) return
+    frame.dataset.theme = theme
+    frame.contentWindow.postMessage(
+      { giscus: { setConfig: { theme: giscusThemeUrl() } } },
+      'https://giscus.app'
+    )
+  }
+
+  if (!window.__giscusThemeBound) {
+    window.__giscusThemeBound = true
+    new MutationObserver(() => {
+      applyGiscusTheme(document.querySelector('iframe.giscus-frame'))
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+  }
+
+  const bindComments = () => {
+    const comments = document.querySelector('[data-giscus]')
+    if (!comments || comments.dataset.bound) return
+    const prompt = comments.querySelector('[data-comments-prompt]')
+    const loadComments = comments.querySelector('button')
+    const label = comments.querySelector('[data-comments-label]')
+    if (!prompt || !loadComments || !label) return
+    comments.dataset.bound = 'true'
+
+    loadComments.addEventListener(
+      'click',
+      () => {
+        loadComments.disabled = true
+        loadComments.setAttribute('aria-busy', 'true')
+        label.textContent = 'Loading comments…'
+
+        const theme = giscusTheme()
+        const params = new URLSearchParams({
+          origin: `${window.location.href.split('#')[0]}#comments-container`,
+          session: '',
+          theme: giscusThemeUrl(),
+          reactionsEnabled: '1',
+          emitMetadata: '0',
+          inputPosition: 'bottom',
+          repo: 'geofmureithi/my_blog',
+          repoId: 'R_kgDOHc3xng',
+          category: 'General',
+          categoryId: 'DIC_kwDOHc3xns4CPegj',
+          strict: '0',
+          description: comments.dataset.description,
+          backLink: comments.dataset.backLink,
+          term: comments.dataset.slug,
+        })
+        const frame = document.createElement('iframe')
+        frame.className = 'giscus-frame mt-4'
+        frame.title = 'Comments'
+        frame.scrolling = 'no'
+        frame.allow = 'clipboard-write'
+        frame.style.width = '100%'
+        frame.style.maxWidth = '100%'
+        frame.style.border = '0'
+        frame.style.display = 'block'
+        frame.style.minHeight = '160px'
+        frame.style.colorScheme = theme
+        frame.style.background = theme === 'dark' ? '#0d1117' : '#fff'
+        frame.hidden = true
+        frame.src = `https://giscus.app/en/widget?${params}`
+        comments.append(frame)
+        frame.addEventListener('load', () => {
+          prompt.replaceWith(frame)
+          frame.hidden = false
+          applyGiscusTheme(frame)
+        })
+
+        let themeSent = false
+        window.addEventListener('message', (event) => {
+          if (event.origin !== 'https://giscus.app' || event.source !== frame.contentWindow) return
+          if (event.data?.giscus?.resizeHeight) {
+            frame.style.height = `${event.data.giscus.resizeHeight}px`
+          }
+          if (event.data?.giscus && !themeSent) {
+            themeSent = true
+            applyGiscusTheme(frame, true)
+          }
+        })
+      },
+      { once: true }
+    )
+  }
+  bindComments()
+  if (!window.__commentsBound) {
+    window.__commentsBound = true
+    document.addEventListener('astro:page-load', bindComments)
+  }
 </script>

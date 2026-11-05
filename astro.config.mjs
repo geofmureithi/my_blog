@@ -21,10 +21,17 @@ const markdownProcessor = unified({
 export default defineConfig({
   site: 'https://mureithi.me',
   trailingSlash: 'never',
-  build: { format: 'file' },
+  // directory format emits about/index.html so hosts can serve /about without
+  // extension rewriting. format: 'file' made /blog 404 while /blog.html worked.
+  build: { format: 'directory' },
   integrations: [mdx()],
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    },
   },
   markdown: {
     syntaxHighlight: false,

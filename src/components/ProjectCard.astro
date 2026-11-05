@@ -1,0 +1,46 @@
+---
+import ArrowOut from './icons/ArrowOut.astro'
+
+interface Props {
+  title: string
+  description: string
+  href: string
+  image: string
+}
+
+const { title, description, href, image } = Astro.props as Props
+---
+
+<article class="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
+  <a
+    href={href}
+    target="_blank"
+    rel="noreferrer"
+    class="block overflow-hidden"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <img
+      src={image}
+      alt=""
+      class="aspect-video w-full object-cover object-center transition duration-300 group-hover:scale-[1.03]"
+    />
+  </a>
+  <div class="flex flex-1 flex-col p-4">
+    <h3 class="text-base font-bold tracking-tight text-gray-900 dark:text-gray-100">
+      <a href={href} target="_blank" rel="noreferrer" class="hover:text-primary-500">
+        {title}
+      </a>
+    </h3>
+    <p class="mt-1.5 flex-1 text-sm leading-6 text-gray-500 dark:text-gray-400">{description}</p>
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      class="mt-3 inline-flex w-fit items-center rounded-lg border border-gray-300 px-2.5 py-1 text-xs font-medium text-primary-500 hover:border-primary-500 dark:border-gray-600 dark:hover:border-primary-400"
+    >
+      Learn more
+      <ArrowOut class="ml-1 h-4 w-4" aria-hidden="true" />
+    </a>
+  </div>
+</article>

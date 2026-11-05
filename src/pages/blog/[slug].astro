@@ -120,16 +120,16 @@ const formatDate = (date: Date) =>
                 </dd>
               </div>
             </dl>
-            <h1 class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-5xl md:leading-14">
+            <h1
+              class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-5xl md:leading-14"
+              transition:name={`post-${entry.id}`}
+            >
               {entry.data.title}
             </h1>
           </div>
         </header>
-        <div
-          class="divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:grid xl:grid-cols-4 xl:gap-x-6 xl:divide-y-0"
-          style="grid-template-rows: auto 1fr"
-        >
-          <dl class="pt-6 pb-10 xl:border-b xl:border-gray-200 xl:pt-11 xl:dark:border-gray-700">
+        <div class="pb-8 xl:grid xl:grid-cols-4 xl:gap-x-6" style="grid-template-rows: auto 1fr">
+          <dl class="pt-6 pb-10 xl:pt-11">
             <dt class="sr-only">Authors</dt>
             <dd>
               <ul class="flex justify-center space-x-8 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
@@ -162,19 +162,22 @@ const formatDate = (date: Date) =>
               </ul>
             </dd>
           </dl>
-          <div class="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
+          <div class="min-w-0 xl:col-span-3 xl:row-span-2 xl:pb-0">
             <div class="prose max-w-none pt-10 pb-8 dark:prose-dark">
               <Content toc={toc} components={{ TOCInline }} />
             </div>
-            <div class="pt-6 pb-6 text-sm text-gray-700 dark:text-gray-300">
+            <div class="flex flex-wrap gap-3 text-sm">
               <a
                 href={'https://mobile.twitter.com/search?q=' + encodeURIComponent(pageUrl)}
                 rel="nofollow"
+                class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 font-medium text-gray-900 hover:border-primary-500 dark:border-gray-600 dark:text-gray-100 dark:hover:border-primary-400"
               >
                 Discuss on Twitter
               </a>
-              {' • '}
-              <a href={siteMetadata.siteRepo + '/blob/main/src/content/blog/' + entry.id + '.mdx'}>
+              <a
+                href={siteMetadata.siteRepo + '/blob/main/src/content/blog/' + entry.id + '.mdx'}
+                class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 font-medium text-gray-900 hover:border-primary-500 dark:border-gray-600 dark:text-gray-100 dark:hover:border-primary-400"
+              >
                 View on GitHub
               </a>
             </div>
@@ -185,17 +188,17 @@ const formatDate = (date: Date) =>
             />
           </div>
           <footer>
-            <div class="divide-gray-200 text-sm font-medium leading-5 dark:divide-gray-700 xl:col-start-1 xl:row-start-2 xl:divide-y">
+            <div class="text-sm leading-5">
               {entry.data.tags.length > 0 && (
                 <div class="py-4 xl:py-8">
-                  <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  <h2 class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
                     Tags
                   </h2>
-                  <div class="flex flex-wrap">
+                  <div class="mt-2 flex flex-wrap gap-x-3 gap-y-1">
                     {entry.data.tags.map((tag) => (
                       <a
                         href={'/tags/' + tagSlug(tag)}
-                        class="mr-3 text-sm font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                        class="text-sm text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                       >
                         {tag}
                       </a>
@@ -206,13 +209,13 @@ const formatDate = (date: Date) =>
             </div>
             <div class="pt-4 xl:pt-8">
               {previousPost && (
-                <div class="pt-6 pb-4">
-                  <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <div class="pb-4">
+                  <h2 class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
                     Previous Article
                   </h2>
                   <a
                     href={`/blog/${previousPost.id}`}
-                    class="mt-2 inline-block text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                    class="mt-2 inline-block text-gray-900 hover:text-primary-500 dark:text-gray-100"
                   >
                     {previousPost.data.title}
                   </a>
@@ -220,7 +223,7 @@ const formatDate = (date: Date) =>
               )}
               <a
                 href="/blog"
-                class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                class="inline-flex w-fit items-center rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-900 hover:border-primary-500 dark:border-gray-600 dark:text-gray-100 dark:hover:border-primary-400"
               >
                 &larr; Back to the blog
               </a>
