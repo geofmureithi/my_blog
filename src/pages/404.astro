@@ -2,6 +2,7 @@
 import '@fontsource/inter/variable-full.css'
 import '../styles/global.css'
 import siteMetadata from '../data/site-metadata'
+import { themeHeadScript } from '../lib/theme'
 ---
 
 <!doctype html>
@@ -15,22 +16,7 @@ import siteMetadata from '../data/site-metadata'
     <link rel="icon" href="/static/favicons/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/static/favicons/favicon-32x32.png" />
 
-    <script is:inline>
-      try {
-        const savedTheme = localStorage.getItem('theme') || 'system'
-        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-
-        document.documentElement.classList.toggle(
-          'dark',
-          savedTheme === 'dark' || (savedTheme === 'system' && systemDark)
-        )
-      } catch {
-        document.documentElement.classList.toggle(
-          'dark',
-          window.matchMedia('(prefers-color-scheme: dark)').matches
-        )
-      }
-    </script>
+    <script is:inline set:html={themeHeadScript} />
   </head>
 
   <body class="min-h-dvh bg-white px-4 py-8 text-black antialiased dark:bg-gray-900 dark:text-white sm:px-6 sm:py-12">
