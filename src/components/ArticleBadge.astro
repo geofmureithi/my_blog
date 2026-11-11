@@ -1,0 +1,15 @@
+---
+import ArticleIcon from './icons/Article.astro'
+import IconBadge from './IconBadge.astro'
+
+interface Props {
+  class?: string
+  iconClass?: string
+}
+
+const { class: className, iconClass = 'h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8' } = Astro.props
+---
+
+<IconBadge class={className}>
+  <ArticleIcon class={iconClass} aria-hidden="true" />
+</IconBadge>

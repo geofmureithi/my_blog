@@ -1,6 +1,9 @@
+import { bindOnce } from './bind-once'
+
 export type ThemeName = 'light' | 'dark'
 
 export const themeStorageKey = 'theme'
+export const themeSwitcherId = 'theme-switcher'
 
 export const themeSurface: Record<ThemeName, string> = {
   light: '#ffffff',
@@ -42,8 +45,8 @@ export function paintGiscusFrame(
 }
 
 export function syncThemeSwitcher(theme: ThemeName = resolveTheme()) {
-  document.querySelectorAll<HTMLElement>('#theme-switcher [data-theme]').forEach((button) => {
-    button.setAttribute('aria-checked', String(button.dataset.theme === theme))
+  document.querySelectorAll<HTMLElement>(`#${themeSwitcherId}`).forEach((button) => {
+    button.setAttribute('aria-checked', String(theme === 'dark'))
   })
 }
 
@@ -52,6 +55,20 @@ export function storeTheme(theme: ThemeName) {
   applyThemeClass(document.documentElement, theme)
   syncThemeSwitcher(theme)
   paintGiscusFrame(document.querySelector('iframe.giscus-frame'), theme, true)
+}
+
+export function toggleTheme() {
+  storeTheme(resolveTheme() === 'dark' ? 'light' : 'dark')
+}
+
+export function bindThemeSwitcher() {
+  const themeSwitcher = document.getElementById(themeSwitcherId)
+  if (!(themeSwitcher instanceof HTMLElement)) return
+
+  bindOnce(themeSwitcher, (button) => {
+    button.addEventListener('click', toggleTheme)
+    syncThemeSwitcher()
+  })
 }
 
 // Inlined in <head> so the class is set before paint. The same string is the
@@ -77,8 +94,8 @@ export const themeHeadScript = `(function () {
   document.addEventListener('astro:after-swap', function () {
     var theme = resolveTheme();
     document.documentElement.classList.toggle('dark', theme === 'dark');
-    document.querySelectorAll('#theme-switcher [data-theme]').forEach(function (button) {
-      button.setAttribute('aria-checked', String(button.dataset.theme === theme));
+    document.querySelectorAll(${JSON.stringify('#' + themeSwitcherId)}).forEach(function (button) {
+      button.setAttribute('aria-checked', String(theme === 'dark'));
     });
   });
 })();`

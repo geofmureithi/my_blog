@@ -1,0 +1,24 @@
+---
+import ArticleBadge from './ArticleBadge.astro'
+
+interface Props {
+  id?: string
+  hidden?: boolean
+}
+
+const { id, hidden = false } = Astro.props
+---
+
+<div
+  id={id}
+  hidden={hidden}
+  role="status"
+  class="mt-10 flex flex-col items-center gap-4 px-4 py-8 text-center sm:mt-12 sm:gap-5 sm:py-12 md:py-16"
+>
+  <slot name="icon">
+    <ArticleBadge />
+  </slot>
+  <p class="max-w-xs text-pretty text-sm leading-6 text-gray-500 sm:max-w-sm sm:text-base sm:leading-7 dark:text-gray-400">
+    <slot />
+  </p>
+</div>
