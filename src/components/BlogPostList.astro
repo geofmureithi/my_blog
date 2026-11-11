@@ -1,7 +1,14 @@
 ---
 import { formatDate } from '../lib/format-date'
+import {
+  articleSearchEmptyId,
+  articleSearchInputId,
+  articleSearchText,
+} from '../lib/article-search'
 import { tagSlug } from '../lib/tags'
+import EmptyState from './EmptyState.astro'
 import ReadMoreIcon from './icons/ReadMore.astro'
+import SearchIcon from './icons/Search.astro'
 import { pageTransition } from '../lib/page-transition'
 
 interface Props {
@@ -20,6 +27,7 @@ interface Props {
 }
 
 const { posts, title, description, search = true } = Astro.props as Props
+const emptyMessage = posts.length === 0 ? 'No articles yet.' : 'No articles match that search.'
 ---
 
 <div>
@@ -30,37 +38,29 @@ const { posts, title, description, search = true } = Astro.props as Props
     {description && <p class="mt-2 text-gray-500 dark:text-gray-400">{description}</p>}
     {search && (
       <div class="relative mt-6 max-w-sm">
-        <label class="sr-only" for="article-search">
+        <label class="sr-only" for={articleSearchInputId}>
           Search articles
         </label>
         <input
-          id="article-search"
+          id={articleSearchInputId}
           type="search"
           placeholder="Search articles"
-          class="block w-full rounded-lg border border-gray-300 bg-transparent py-1.5 pr-9 pl-3 text-sm text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:outline-hidden dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+          autocomplete="off"
+          class="block w-full rounded-lg border border-gray-300 bg-transparent py-1.5 pr-9 pl-3 text-sm text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:outline-none dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
         />
-        <svg
+        <SearchIcon
           aria-hidden="true"
           class="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-gray-500"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M8.5 3a5.5 5.5 0 103.48 9.76l3.63 3.63a.75.75 0 101.06-1.06l-3.63-3.63A5.5 5.5 0 008.5 3zM4.5 8.5a4 4 0 118 0 4 4 0 01-8 0z"
-            clip-rule="evenodd"
-          />
-        </svg>
+        />
       </div>
     )}
   </header>
-  <ul id="article-list" class="mt-8 flex flex-col gap-8">
+  <ul
+    id="article-list"
+    class="mt-8 flex flex-col gap-8 empty:hidden [&:not(:has([data-article]:not([hidden])))]:hidden"
+  >
     {posts.map((post) => (
-      <li
-        data-article
-        data-search={`${post.data.title} ${post.data.summary || ''} ${post.data.tags.join(' ')}`.toLowerCase()}
-      >
+      <li data-article data-search={articleSearchText(post.data)}>
         <article>
           <div class="flex items-baseline justify-between gap-4">
             <h3
@@ -106,16 +106,9 @@ const { posts, title, description, search = true } = Astro.props as Props
       </li>
     ))}
   </ul>
+  {(search || posts.length === 0) && (
+    <EmptyState id={articleSearchEmptyId} hidden={posts.length > 0}>
+      {emptyMessage}
+    </EmptyState>
+  )}
 </div>
-
-{search && <script is:inline>
-  const searchInput = document.getElementById('article-search')
-  const articleItems = [...document.querySelectorAll('[data-article]')]
-  searchInput.addEventListener('input', () => {
-    const query = searchInput.value.trim().toLowerCase()
-    articleItems.forEach((item) => {
-      const matches = item.dataset.search.includes(query)
-      item.hidden = !matches
-    })
-  })
-</script>}

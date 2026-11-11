@@ -5,6 +5,7 @@ import '../styles/global.css'
 import '../styles/prism.css'
 import logo from '../assets/logo.svg?raw'
 import SocialLinks from '../components/SocialLinks.astro'
+import ThemeSwitcher from '../components/ThemeSwitcher.astro'
 import siteMetadata from '../data/site-metadata'
 import { pageTransition } from '../lib/page-transition'
 import { themeHeadScript } from '../lib/theme'
@@ -242,7 +243,7 @@ const footerSocials = [
                   </a>
                 ))}
               </nav>
-              <div class="flex items-center gap-3">
+              <div class="flex flex-col items-start gap-2 sm:items-end">
                 <nav aria-label="Social links" class="flex max-w-full flex-wrap items-center gap-2">
                   <SocialLinks
                     links={footerSocials}
@@ -250,50 +251,7 @@ const footerSocials = [
                     iconClass="h-4 w-4"
                   />
                 </nav>
-                <div
-                  id="theme-switcher"
-                  class="inline-flex w-fit rounded-full border border-gray-300 bg-transparent p-0.5 dark:border-gray-700"
-                  role="radiogroup"
-                  aria-label="Theme"
-                >
-                  <button
-                    type="button"
-                    data-theme="light"
-                    aria-label="Light"
-                    class="theme-option inline-flex h-5 w-5 items-center justify-center rounded-full bg-transparent text-gray-500 outline-none dark:text-gray-400"
-                    role="radio"
-                  >
-                    <svg
-                      class="h-3 w-3"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      aria-hidden="true"
-                    >
-                      <circle cx="12" cy="12" r="4"></circle>
-                      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
-                    </svg>
-                  </button>
-                  <button
-                    type="button"
-                    data-theme="dark"
-                    aria-label="Dark"
-                    class="theme-option inline-flex h-5 w-5 items-center justify-center rounded-full bg-transparent text-gray-500 outline-none dark:text-gray-400"
-                    role="radio"
-                  >
-                    <svg
-                      class="h-3 w-3"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      aria-hidden="true"
-                    >
-                      <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"></path>
-                    </svg>
-                  </button>
-                </div>
+                <ThemeSwitcher />
               </div>
             </div>
             <div class="mt-4 text-sm text-gray-400 dark:text-gray-500">
@@ -306,16 +264,6 @@ const footerSocials = [
       </div>
     </div>
     <style>
-      .theme-option[aria-checked='true'] {
-        background: #f5f5f5;
-        color: #171717;
-      }
-
-      :global(.dark) .theme-option[aria-checked='true'] {
-        background: #171717;
-        color: #fff;
-      }
-
       header.menu-open,
       header.menu-open > div {
         background: #171717;
@@ -329,18 +277,8 @@ const footerSocials = [
       }
     </style>
     <script>
-      import { resolveTheme, storeTheme, syncThemeSwitcher } from '../lib/theme'
-
-      const themeSwitcher = document.getElementById('theme-switcher')
-      if (themeSwitcher instanceof HTMLElement && themeSwitcher.dataset.bound !== 'true') {
-        themeSwitcher.dataset.bound = 'true'
-        themeSwitcher.addEventListener('click', (event) => {
-          const button = (event.target as Element | null)?.closest('[data-theme]')
-          const theme = button?.getAttribute('data-theme')
-          if (theme === 'light' || theme === 'dark') storeTheme(theme)
-        })
-        syncThemeSwitcher(resolveTheme())
-      }
+      import { bindArticleSearch } from '../lib/article-search'
+      import { bindThemeSwitcher } from '../lib/theme'
 
       const showMobileNav = (show: boolean) => {
         const navToggle = document.getElementById('mobile-nav-toggle')
@@ -368,6 +306,13 @@ const footerSocials = [
         }
         if (target.closest('[data-mobile-nav-link]')) showMobileNav(false)
       })
+      const onPageReady = () => {
+        bindThemeSwitcher()
+        bindArticleSearch()
+      }
+
+      onPageReady()
+      document.addEventListener('astro:page-load', onPageReady)
       document.addEventListener('astro:before-preparation', () => showMobileNav(false))
       document.addEventListener('astro:after-swap', () => showMobileNav(false))
     </script>
